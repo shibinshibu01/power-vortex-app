@@ -71,29 +71,28 @@ class UIComponents {
   Future init() async {
     prefs = await SharedPreferences.getInstance();
     isDark = prefs.getBool('isDark') ?? false;
-    print(isDark);
+    isDark=!isDark;
+    //print(isDark);
     changeTheme();
   }
 
-  UIComponents() {
-    init();
-    
-  }
+ 
   late MaterialColor primarySwatch;
   late MaterialColor background;
   late Brightness brightness;
   late Color textcolor;
   late Color selectioncolor;
   late bool isDark;
+  late Color slide;
 
   Future changeTheme() async {
-    
     if (isDark) {
       primarySwatch = lightTheme.primarySwatch;
       background = lightTheme.background;
       brightness = lightTheme.brightness;
       textcolor = lightTheme.textcolor;
       selectioncolor = lightTheme.selectioncolor;
+      slide = lightTheme.splash;
       isDark = false;
     } else {
       primarySwatch = darkTheme.primarySwatch;
@@ -101,9 +100,10 @@ class UIComponents {
       brightness = darkTheme.brightness;
       textcolor = darkTheme.textcolor;
       selectioncolor = darkTheme.selectioncolor;
+      slide = darkTheme.splash;
       isDark = true;
     }
-    
+
     await prefs.setBool('isDark', isDark);
   }
   //var theme = DarkTheme();

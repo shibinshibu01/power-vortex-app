@@ -6,18 +6,21 @@ import 'package:flutter/material.dart';
 import '../obj/ui.dart';
 
 class Splash extends StatefulWidget {
-  Splash({Key? key}) : super(key: key);
+  final UIComponents ui;
+  Splash({Key? key, required this.ui}) : super(key: key);
 
   @override
-  _SplashState createState() => _SplashState();
+  _SplashState createState() => _SplashState(ui);
 }
 
 class _SplashState extends State<Splash> {
   late UIComponents ui;
-  
+  _SplashState(UIComponents ui) {
+    this.ui = ui;
+  }
 
   Future<Widget> futureCall() async {
-    ui = UIComponents();
+    ///ui = UIComponents();
     await ui.init();
     await Future.delayed(Duration(seconds: 3));
     return Future.value(new Body(ui: ui));

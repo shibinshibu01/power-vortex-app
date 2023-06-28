@@ -5,7 +5,7 @@ Widget schedule(ui)=> Center(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
            Text(
-            'Shecdule',
+            'Schedule',
             style: TextStyle(
               color: ui.textcolor,
               fontSize: 18,

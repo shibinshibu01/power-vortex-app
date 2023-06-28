@@ -2,7 +2,7 @@
     <application
         android:label="powervortex"
         android:name="${applicationName}"
-        android:icon="@mipmap/powervortex">
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"
