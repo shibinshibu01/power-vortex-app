@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "497144559839",
+    "firebase_url": "https://powervortex-1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "powervortex-1",
+    "storage_bucket": "powervortex-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497144559839:android:863a436af7e9a02280116a",
+        "android_client_info": {
+          "package_name": "com.example.powervortex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "497144559839-cd7k4n94njofbn2l5pffpsgb65s8f843.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwQOIr_buWAHCDAJYuTMjpZCn-7eb-vUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "497144559839-a5f3mequk62s2nf9rr9kjhft20bllmlr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
