@@ -29,21 +29,14 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return EasySplashScreen(
-      backgroundColor: Color(0xff20466A),
-      logo: Image.asset('assets/logotransparent.png'),
-      title: Text(
-        "Power Vortex",
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
+      backgroundColor: Color(0xff1F2122),
+      logo: Image.asset('assets/logotext.png'),
+     
       //backgroundColor: Colors.grey.shade400,
       showLoader: true,
-      loaderColor: Colors.white,
+      loaderColor: Color(0xffE1BA48),
      logoWidth: 200, 
-      loadingText: Text("Loading..." , style: TextStyle(color: Colors.white),),
+      loadingText: Text("Loading..." , style: TextStyle(color: Color(0xffE1BA48)),),
       futureNavigator: futureCall(),
     );
   }

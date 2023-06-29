@@ -66,6 +66,14 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton:_pageIndex==1? FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: ui.selectioncolor,
+        onPressed: () {}
+      ):null,
+
+
+
         backgroundColor: ui.background,
         // appBar: AppBar(
         //   backgroundColor: ui.primarySwatch,
@@ -144,9 +152,9 @@ class _BodyState extends State<Body> {
                  physics: NeverScrollableScrollPhysics(),
                 controller: _pageController,
                 children: [
-                  home(ui),
-                  schedule(ui),
-                  dashboard(ui),
+                  Home(ui:ui),
+                  Schedule(ui:ui),
+                  DashBoard(ui:ui),
                 ],
               ),
             ),

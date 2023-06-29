@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 class LightTheme {
   MaterialColor primarySwatch = const MaterialColor(0xffF3EDF7, <int, Color>{
     50: Color(0xffF3EDF7),
@@ -28,9 +30,11 @@ class LightTheme {
     900: Color(0xffFEF7FF),
   });
   Brightness brightness = Brightness.light;
-  Color textcolor = Colors.black;
+  Color textcolor = Color(0xff4D4D4D);
   Color selectioncolor = Color(0xffE8DEF8);
   Color splash = Color(0xff20466A);
+  Color switchon = Color(0xff4D4D4D);
+  Color switchoff = Color(0x884D4D4D);
 }
 
 class DarkTheme {
@@ -59,9 +63,11 @@ class DarkTheme {
     900: Color(0xff141218),
   });
   Brightness brightness = Brightness.dark;
-  Color textcolor = Colors.white;
+  Color textcolor = Color(0xffE1BA48);
   Color selectioncolor = Color(0xff4A4458);
   Color splash = Color(0xff000F21);
+  Color switchon = Color(0xffE1BA48);
+  Color switchoff = Color(0x88E1BA48);
 }
 
 class UIComponents {
@@ -71,12 +77,11 @@ class UIComponents {
   Future init() async {
     prefs = await SharedPreferences.getInstance();
     isDark = prefs.getBool('isDark') ?? false;
-    isDark=!isDark;
+    isDark = !isDark;
     //print(isDark);
     changeTheme();
   }
 
- 
   late MaterialColor primarySwatch;
   late MaterialColor background;
   late Brightness brightness;
@@ -84,6 +89,8 @@ class UIComponents {
   late Color selectioncolor;
   late bool isDark;
   late Color slide;
+  late Color switchon;
+  late Color switchoff;
 
   Future changeTheme() async {
     if (isDark) {
@@ -93,6 +100,8 @@ class UIComponents {
       textcolor = lightTheme.textcolor;
       selectioncolor = lightTheme.selectioncolor;
       slide = lightTheme.splash;
+      switchon = lightTheme.switchon;
+      switchoff = lightTheme.switchoff;
       isDark = false;
     } else {
       primarySwatch = darkTheme.primarySwatch;
@@ -101,6 +110,8 @@ class UIComponents {
       textcolor = darkTheme.textcolor;
       selectioncolor = darkTheme.selectioncolor;
       slide = darkTheme.splash;
+      switchon = darkTheme.switchon;
+      switchoff = darkTheme.switchoff;
       isDark = true;
     }
 
