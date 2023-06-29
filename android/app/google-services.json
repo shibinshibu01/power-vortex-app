@@ -30,6 +30,13 @@
             {
               "client_id": "497144559839-a5f3mequk62s2nf9rr9kjhft20bllmlr.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "497144559839-1jb9loq6mtj770ab4hflksu9ej5kfan1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.powervortex.RunnerTests"
+              }
             }
           ]
         }

@@ -1,5 +1,8 @@
 import 'dart:math';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 String generateID(int length) {
   final random = Random();
   const chars =
@@ -9,11 +12,9 @@ String generateID(int length) {
   for (int i = 0; i < length; i++) {
     randomString += chars[random.nextInt(chars.length)];
   }
-  
+
   return randomString;
 }
-
-
 
 enum DeviceType { fan, light, tv, ac, fridge, washingMachine, other }
 
@@ -90,13 +91,31 @@ class User {
   String email;
   String phone;
   DateTime dob;
-  List<Home> homes=[];
-  User(
-      {required this.uid,
-      required this.name,
-      required this.email,
-      required this.phone,
-      required this.dob,
-      
-      });
+  List<Home> homes = [];
+  User({
+    required this.uid,
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.dob,
+  });
+
+  void addHome(Home home) {
+    homes.add(home);
+  }
+
+  //implement a sign in method here using firebase auth email and password
+  void signIn(String email, String password) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    try {
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      // User registration successful
+    } catch (e) {
+      // Handle registration error
+    }
+  }
 }

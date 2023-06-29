@@ -38,17 +38,17 @@ class LightTheme {
 }
 
 class DarkTheme {
-  MaterialColor primarySwatch = const MaterialColor(0xff211F26, <int, Color>{
-    50: Color(0xff211F26),
-    100: Color(0xff211F26),
-    200: Color(0xff211F26),
-    300: Color(0xff211F26),
-    400: Color(0xff211F26),
-    500: Color(0xff211F26),
-    600: Color(0xff211F26),
-    700: Color(0xff211F26),
-    800: Color(0xff211F26),
-    900: Color(0xff211F26),
+  MaterialColor primarySwatch = const MaterialColor(0xff2B2930, <int, Color>{
+    50: Color(0xff2B2930),
+    100: Color(0xff2B2930),
+    200: Color(0xff2B2930),
+    300: Color(0xff2B2930),
+    400: Color(0xff2B2930),
+    500: Color(0xff2B2930),
+    600: Color(0xff2B2930),
+    700: Color(0xff2B2930),
+    800: Color(0xff2B2930),
+    900: Color(0xff2B2930),
   });
   MaterialColor background = const MaterialColor(0xff141218, <int, Color>{
     50: Color(0xff141218),

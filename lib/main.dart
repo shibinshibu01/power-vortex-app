@@ -6,8 +6,15 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'screens/dashboard.dart';
 import 'screens/schedule.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-void main() {
+void main()async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(Vortex());
 }
 
@@ -93,7 +100,7 @@ class _BodyState extends State<Body> {
             key: _key,
             appBar: SliderAppBar(
                 drawerIconColor: ui.textcolor,
-                appBarColor: ui.primarySwatch,
+                appBarColor: ui.background,
                 title: Text('Power Vortex',
                     style: TextStyle(
                         fontSize: 22,
