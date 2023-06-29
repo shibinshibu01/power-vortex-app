@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 String generateID(int length) {
   final random = Random();
@@ -17,6 +18,7 @@ String generateID(int length) {
 }
 
 enum DeviceType { fan, light, tv, ac, fridge, washingMachine, other }
+enum RoomType{bedroom, livingroom, kitchen, bathroom, other}
 
 class Device {
   String did;
@@ -46,8 +48,11 @@ class Board {
 
 class Room {
   String rid;
+  AssetImage lightimage;
+  AssetImage darkimage;
   List<Board> boards;
-  Room({required this.rid, required this.boards});
+  RoomType type;
+  Room({required this.rid, required this.boards, required this.type,required this.lightimage,required this.darkimage});
   double getRoomConsumption() {
     double consumption = 0;
     for (var board in boards) {

@@ -173,10 +173,10 @@ class _BodyState extends State<Body> {
           tabMargin: EdgeInsets.symmetric(horizontal: 4, vertical: 10),
           tabActiveBorder: Border.all(color: ui.textcolor, width: 0.2),
           padding: EdgeInsets.all(10),
-          tabBackgroundColor: ui.selectioncolor,
+          tabBackgroundColor: ui.textcolor,
           backgroundColor: ui.primarySwatch,
           color: ui.textcolor,
-          activeColor: ui.textcolor,
+          activeColor: ui.selectioncolor,
           onTabChange: (value) => setState(() {
             _pageIndex = value;
             _pageController.animateToPage(value,
