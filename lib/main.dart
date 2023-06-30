@@ -10,7 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-void main()async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -73,14 +73,12 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton:_pageIndex==1? FloatingActionButton(
-        child: Icon(Icons.add),
-        backgroundColor: ui.selectioncolor,
-        onPressed: () {}
-      ):null,
-
-
-
+        floatingActionButton: _pageIndex == 1
+            ? FloatingActionButton(
+                child: Icon(Icons.add),
+                backgroundColor: ui.selectioncolor,
+                onPressed: () {})
+            : null,
         backgroundColor: ui.background,
         // appBar: AppBar(
         //   backgroundColor: ui.primarySwatch,
@@ -96,16 +94,23 @@ class _BodyState extends State<Body> {
         // ),
         body: SafeArea(
           child: SliderDrawer(
-            
             key: _key,
             appBar: SliderAppBar(
+                drawerIcon: GestureDetector(
+                  child: Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: Image(image: AssetImage('assets/logotext.png')),
+                  ),
+                  onTap: () {
+                    _key.currentState!.isDrawerOpen
+                        ? _key.currentState!.closeSlider()
+                        : _key.currentState!.openSlider();
+                  },
+                ),
                 drawerIconColor: ui.textcolor,
                 appBarColor: ui.background,
-                title: Text('Power Vortex',
-                    style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: ui.textcolor))),
+                title: Text('')
+                        ),
             slider: Container(
               alignment: Alignment.center,
               color: ui.slide,
@@ -122,7 +127,9 @@ class _BodyState extends State<Body> {
                   slideOption('Settings', Icons.settings),
                   slideOption('About', Icons.info),
                   slideOption('Logout', Icons.logout),
-                  const SizedBox(height: 20,),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   ListTile(
                     leading: Icon(
                       Icons.brightness_3,
@@ -156,19 +163,18 @@ class _BodyState extends State<Body> {
               width: double.infinity,
               color: ui.background,
               child: PageView(
-                 physics: NeverScrollableScrollPhysics(),
+                physics: NeverScrollableScrollPhysics(),
                 controller: _pageController,
                 children: [
-                  Home(ui:ui),
-                  Schedule(ui:ui),
-                  DashBoard(ui:ui),
+                  Home(ui: ui),
+                  Schedule(ui: ui),
+                  DashBoard(ui: ui),
                 ],
               ),
             ),
           ),
         ),
         bottomNavigationBar: GNav(
-          
           gap: 5,
           tabMargin: EdgeInsets.symmetric(horizontal: 4, vertical: 10),
           tabActiveBorder: Border.all(color: ui.textcolor, width: 0.2),

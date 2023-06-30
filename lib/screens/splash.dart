@@ -31,12 +31,15 @@ class _SplashState extends State<Splash> {
     return EasySplashScreen(
       backgroundColor: Color(0xff1F2122),
       logo: Image.asset('assets/logotext.png'),
-     
+
       //backgroundColor: Colors.grey.shade400,
       showLoader: true,
       loaderColor: Color(0xffE1BA48),
-     logoWidth: 200, 
-      loadingText: Text("Loading..." , style: TextStyle(color: Color(0xffE1BA48)),),
+      logoWidth: 200,
+      loadingText: Text(
+        "Loading...",
+        style: TextStyle(color: Color(0xffE1BA48)),
+      ),
       futureNavigator: futureCall(),
     );
   }

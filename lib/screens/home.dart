@@ -35,17 +35,7 @@ class _HomeState extends State<Home> {
       width: double.infinity,
       child: ListView(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Hello $user',
-              style: TextStyle(
-                color: ui.textcolor,
-                fontSize: 38,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+          
           SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -161,7 +151,7 @@ class _HomeState extends State<Home> {
                           BoxShadow(
                             color: Colors.black.withOpacity(0.5),
                             blurRadius: 10,
-                            offset: Offset(0, 5),
+                            offset: Offset(0, 10),
                           ),
                         ],
                       ),
@@ -189,7 +179,7 @@ class _HomeState extends State<Home> {
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                  color: ui.textcolor,
+                                  color: ui.secondary,
                                   
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(20),

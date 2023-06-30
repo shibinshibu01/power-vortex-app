@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+
 class LightTheme {
   MaterialColor primarySwatch = const MaterialColor(0xffF3EDF7, <int, Color>{
     50: Color(0xffF3EDF7),
@@ -30,6 +31,7 @@ class LightTheme {
     900: Color(0xffFEF7FF),
   });
   Brightness brightness = Brightness.light;
+  Color secondary = Color(0xff4D4D4D);
   Color textcolor = Color(0xff4D4D4D);
   Color selectioncolor = Color(0xffE8DEF8);
   Color splash = Color(0xff20466A);
@@ -63,7 +65,8 @@ class DarkTheme {
     900: Color(0xff141218),
   });
   Brightness brightness = Brightness.dark;
-  Color textcolor = Color(0xffE1BA48);
+  Color secondary = Color(0xffE1BA48);
+  Color textcolor = Color(0xffFEF7FF);
   Color selectioncolor = Color(0xff4A4458);
   Color splash = Color(0xff000F21);
   Color switchon = Color(0xffE1BA48);
@@ -91,6 +94,7 @@ class UIComponents {
   late Color slide;
   late Color switchon;
   late Color switchoff;
+  late Color secondary;
 
   Future changeTheme() async {
     if (isDark) {
@@ -102,6 +106,7 @@ class UIComponents {
       slide = lightTheme.splash;
       switchon = lightTheme.switchon;
       switchoff = lightTheme.switchoff;
+      secondary = lightTheme.secondary;
       isDark = false;
     } else {
       primarySwatch = darkTheme.primarySwatch;
@@ -112,6 +117,7 @@ class UIComponents {
       slide = darkTheme.splash;
       switchon = darkTheme.switchon;
       switchoff = darkTheme.switchoff;
+      secondary = darkTheme.secondary;
       isDark = true;
     }
 
