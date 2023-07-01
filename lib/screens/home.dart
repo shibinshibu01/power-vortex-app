@@ -64,7 +64,7 @@ class _HomeState extends State<Home> {
                         width: 175,
                         height: 200,
                         alignment: Alignment.center,
-                        padding: EdgeInsets.all(30),
+                        padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: ui.primarySwatch,
                           borderRadius: BorderRadius.circular(20),
@@ -87,28 +87,39 @@ class _HomeState extends State<Home> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: IconButton(
-                                alignment: Alignment.centerLeft,
-                                icon: Icon(
-                                  Icons.power_settings_new,
-                                  size: 50,
-                                  color: devices[index].status
-                                      ? ui.switchon
-                                      : ui.switchoff,
-                                ),
-                                onPressed: () {
-                                  devices[index].status = !devices[index].status;
-                                  setState(() {});
-                                  Future.delayed(Duration(seconds: 3), () {
-                                    setState(() {
-                                      if (!devices[index].status) {
-                                        devices.removeAt(index);
-                                      }
+                            Container(
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 40),
+                                child: IconButton(
+                                  alignment: Alignment.centerLeft,
+                                  icon: Icon(
+                                    Icons.power_settings_new,
+                                    size: 80,
+                                    color: devices[index].status
+                                        ? ui.switchon
+                                        : ui.switchoff,
+                                  ),
+                                  onPressed: () {
+                                    devices[index].status = !devices[index].status;
+                                    setState(() {});
+                                    Future.delayed(Duration(seconds: 3), () {
+                                      setState(() {
+                                        if (!devices[index].status) {
+                                          devices.removeAt(index);
+                                        }
+                                      });
                                     });
-                                  });
-                                },
+                                  },
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              devices[index].type.toString().split('.')[1],
+                              style: TextStyle(
+                                color: ui.textcolor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],

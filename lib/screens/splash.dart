@@ -4,6 +4,9 @@ import 'package:easy_splash_screen/easy_splash_screen.dart';
 import '../main.dart';
 import 'package:flutter/material.dart';
 import '../obj/ui.dart';
+import 'login.dart';
+import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
+
 
 class Splash extends StatefulWidget {
   final UIComponents ui;
@@ -23,7 +26,7 @@ class _SplashState extends State<Splash> {
     ///ui = UIComponents();
     await ui.init();
     await Future.delayed(Duration(seconds: 3));
-    return Future.value(new Body(ui: ui));
+    return Future.value(new Login(ui: ui));
   }
 
   @override

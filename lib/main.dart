@@ -95,25 +95,20 @@ class _BodyState extends State<Body> {
         body: SafeArea(
           child: SliderDrawer(
             key: _key,
+            slideDirection: SlideDirection.RIGHT_TO_LEFT,
             appBar: SliderAppBar(
-                drawerIcon: GestureDetector(
-                  child: Padding(
+              trailing:Padding(
                     padding: const EdgeInsets.all(1.0),
                     child: Image(image: AssetImage('assets/logotext.png')),
-                  ),
-                  onTap: () {
-                    _key.currentState!.isDrawerOpen
-                        ? _key.currentState!.closeSlider()
-                        : _key.currentState!.openSlider();
-                  },
-                ),
+                  ), 
+                
                 drawerIconColor: ui.textcolor,
                 appBarColor: ui.background,
                 title: Text('')
                         ),
             slider: Container(
               alignment: Alignment.center,
-              color: ui.slide,
+              color: ui.primarySwatch,
               child: ListView(
                 children: [
                   CircleAvatar(
@@ -179,10 +174,10 @@ class _BodyState extends State<Body> {
           tabMargin: EdgeInsets.symmetric(horizontal: 4, vertical: 10),
           tabActiveBorder: Border.all(color: ui.textcolor, width: 0.2),
           padding: EdgeInsets.all(10),
-          tabBackgroundColor: ui.textcolor,
+          tabBackgroundColor: ui.secondary,
           backgroundColor: ui.primarySwatch,
           color: ui.textcolor,
-          activeColor: ui.selectioncolor,
+          activeColor: ui.background,
           onTabChange: (value) => setState(() {
             _pageIndex = value;
             _pageController.animateToPage(value,
