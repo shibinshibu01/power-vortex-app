@@ -9,6 +9,7 @@ import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'screens/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +30,8 @@ class Vortex extends StatelessWidget {
       routes: {
         '/': (context) => Splash(ui: ui),
         //'/second': (context) => const SecondPage(title: 'Second Page'),
-        '/home': (context) => Body(ui: ui)
+        '/home': (context) => Body(ui: ui),
+        '/login':(context) => Login(ui: ui),
       },
       theme: ThemeData(
           // primarySwatch: ui.primarySwatch,
@@ -148,6 +150,32 @@ class _BodyState extends State<Body> {
                       onChanged: (value) => setState(() {
                         ui.changeTheme();
                       }),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.logout,
+                      color: ui.yellow,
+                    ),
+                    title: TextButton(
+                      onPressed: () async {
+                        await FirebaseAuth.instance.signOut();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Logged out'),
+                            duration: Duration(seconds: 1),
+                          ),
+                        );
+                        Navigator.pushNamed(context, '/login');
+                      },
+                      child: Text(
+                        'Logout',
+                        style: TextStyle(
+                          color: ui.textcolor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   )
                 ],

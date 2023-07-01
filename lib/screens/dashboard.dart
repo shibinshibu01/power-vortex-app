@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../obj/ui.dart';
-
+import '../global.dart';
 class DashBoard extends StatefulWidget {
   UIComponents ui;
   DashBoard({super.key, required this.ui});
@@ -19,7 +19,7 @@ class _DashBoardState extends State<DashBoard> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
            Text(
-            'Dashboard',
+            'Dashboard \n${currentuser!.displayName}',
             style: TextStyle(
               color: ui.textcolor,
               fontSize: 18,

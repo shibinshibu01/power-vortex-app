@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../obj/ui.dart';
+import '../database/auth.dart';
 
 class Login extends StatefulWidget {
   final UIComponents ui;
@@ -22,6 +23,107 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   _LoginState(UIComponents ui) {
     this.ui = ui;
   }
+  void startSignIn()async {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing the popup by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Loading'),
+          content: Row(
+            children: [
+              CircularProgressIndicator(), // Loading indicator
+              SizedBox(width: 16.0),
+              Text('Please wait...'),
+            ],
+          ),
+        );
+      },
+    );
+    if (useremail.text.isEmpty || password.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Please fill all fields'),
+        duration: Duration(seconds: 2),
+      ));
+      Navigator.of(context).pop();
+      return;
+    }
+    await signIn(useremail.text, password.text).then((value) {
+      if (value == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Sign in successful'),
+          duration: Duration(seconds: 2),
+        ));
+        Navigator.of(context).pop();
+        Navigator.of(context).pushReplacementNamed('/home');
+        
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value.toString()),
+          duration: Duration(seconds: 2),
+        ));
+        Navigator.of(context).pop();
+      }
+    });
+  }
+
+  void startSignUp() async{
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing the popup by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Loading'),
+          content: Row(
+            children: [
+              CircularProgressIndicator(), // Loading indicator
+              SizedBox(width: 16.0),
+              Text('Please wait...'),
+            ],
+          ),
+        );
+      },
+    );
+    if (name.text.isEmpty ||
+        emailsignup.text.isEmpty ||
+        passwordsignup.text.isEmpty ||
+        confirmpassword.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Please fill all fields'),
+        duration: Duration(seconds: 2),
+      ));
+      Navigator.of(context).pop();
+      return;
+    }
+
+    if (passwordsignup.text != confirmpassword.text) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Passwords do not match'),
+        duration: Duration(seconds: 2),
+      ));
+      Navigator.of(context).pop();
+      return;
+    }
+
+    await signUp(emailsignup.text, passwordsignup.text, name.text).then((value) {
+      if (value == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Sign up successful'),
+          duration: Duration(seconds: 2),
+        ));
+        Navigator.of(context).pop();
+        Navigator.of(context).pushReplacementNamed('/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value.toString()),
+          duration: Duration(seconds: 2),
+        ));
+        Navigator.of(context).pop();
+      }
+    });
+    
+  }
+
   void _showSignUp() {
     Future.delayed(Duration(milliseconds: 100), () {
       showModalBottomSheet(
@@ -223,7 +325,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          startSignIn();
+                        },
                         child: Text(
                           'Continue',
                           style: TextStyle(color: ui.textcolor),
@@ -298,7 +402,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         ))
                   ],
                 ),
-                 TextField(
+                TextField(
                     cursorColor: Color(0xffE1BA48),
                     style: TextStyle(
                       color: ui.textcolor,
@@ -320,10 +424,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     )),
                 SizedBox(
                   height: 20,
-                
                 ),
                 TextField(
-
                     cursorColor: Color(0xffE1BA48),
                     style: TextStyle(
                       color: ui.textcolor,
@@ -343,7 +445,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       hintText: 'Email address ',
                       hintStyle: TextStyle(color: ui.textcolor),
                     )),
-               
                 TextField(
                     obscureText: _obscureText,
                     cursorColor: Color(0xffE1BA48),
@@ -365,20 +466,19 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         hintText: 'password ',
                         hintStyle: TextStyle(color: ui.textcolor),
                         suffix: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _obscureText = !_obscureText;
-                            });
-                          },
-                          icon:  Icon(
-                            _obscureText
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                            color: Color(0xffE1BA48),
-                          )
-                        ))),
-                        TextField(
-                          obscureText: _obscureText2,
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Color(0xffE1BA48),
+                            )))),
+                TextField(
+                    obscureText: _obscureText2,
                     cursorColor: Color(0xffE1BA48),
                     style: TextStyle(
                       color: ui.textcolor,
@@ -398,37 +498,36 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         hintText: 'confirm password ',
                         hintStyle: TextStyle(color: ui.textcolor),
                         suffix: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _obscureText2 = !_obscureText2;
-                            });
-                          },
-                          icon: Icon(
-                            _obscureText2
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                            color: Color(0xffE1BA48),
-                          )
-                        ))),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText2 = !_obscureText2;
+                              });
+                            },
+                            icon: Icon(
+                              _obscureText2
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Color(0xffE1BA48),
+                            )))),
                 SizedBox(
                   height: 20,
                 ),
-                
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Color(0xffE1BA48),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            'Continue',
-                            style: TextStyle(color: ui.textcolor),
-                          )
-                          ),
-                    )
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Color(0xffE1BA48),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                      ),
+                      onPressed: () {
+                        startSignUp();
+                      },
+                      child: Text(
+                        'Continue',
+                        style: TextStyle(color: ui.textcolor),
+                      )),
+                )
               ],
             ),
           ),

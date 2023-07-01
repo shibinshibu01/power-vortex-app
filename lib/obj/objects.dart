@@ -68,11 +68,11 @@ class Room {
   }
 }
 
-class Home {
+class HomeDetails {
   String hid;
   List<Room> rooms;
   List<User> users;
-  Home({required this.hid, required this.rooms, required this.users});
+  HomeDetails({required this.hid, required this.rooms, required this.users});
   double getTotalConsumption() {
     double consumption = 0;
     for (var room in rooms) {
@@ -90,14 +90,14 @@ class Home {
   }
 }
 
-class User {
+class UserDetails {
   String uid;
   String name;
   String email;
   String phone;
   DateTime dob;
-  List<Home> homes = [];
-  User({
+  List<HomeDetails> homes = [];
+  UserDetails({
     required this.uid,
     required this.name,
     required this.email,
@@ -105,7 +105,7 @@ class User {
     required this.dob,
   });
 
-  void addHome(Home home) {
+  void addHome(HomeDetails home) {
     homes.add(home);
   }
 

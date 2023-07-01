@@ -95,7 +95,7 @@ class UIComponents {
   late Color switchon;
   late Color switchoff;
   late Color secondary;
-
+  Color yellow = Color(0xffE1BA48);
   Future changeTheme() async {
     if (isDark) {
       primarySwatch = lightTheme.primarySwatch;

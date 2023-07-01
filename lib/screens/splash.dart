@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:easy_splash_screen/easy_splash_screen.dart';
+import 'package:powervortex/global.dart';
+import 'package:powervortex/obj/objects.dart';
 import '../main.dart';
 import 'package:flutter/material.dart';
 import '../obj/ui.dart';
 import 'login.dart';
 import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Splash extends StatefulWidget {
   final UIComponents ui;
@@ -17,6 +19,8 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
+  FirebaseAuth auth = FirebaseAuth.instance;
+  User? user;
   late UIComponents ui;
   _SplashState(UIComponents ui) {
     this.ui = ui;
@@ -25,7 +29,13 @@ class _SplashState extends State<Splash> {
   Future<Widget> futureCall() async {
     ///ui = UIComponents();
     await ui.init();
+    auth.authStateChanges().listen((User? user) {
+    currentuser=user;
+      });
     await Future.delayed(Duration(seconds: 3));
+    if (auth.currentUser != null) {
+      return Future.value(new Body(ui: ui));
+    }
     return Future.value(new Login(ui: ui));
   }
 
