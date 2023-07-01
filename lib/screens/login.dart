@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import '../obj/ui.dart';
 import '../database/auth.dart';
+import '../global.dart';
 
 class Login extends StatefulWidget {
   final UIComponents ui;
   const Login({super.key, required this.ui});
 
   @override
-  State<Login> createState() => _LoginState(ui);
+  State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> with TickerProviderStateMixin {
-  late UIComponents ui;
+  
   TextEditingController emailsignup = TextEditingController();
   TextEditingController passwordsignup = TextEditingController();
   TextEditingController name = TextEditingController();
@@ -20,21 +21,33 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   TextEditingController confirmpassword = TextEditingController();
   bool _obscureText = true;
   bool _obscureText2 = true;
-  _LoginState(UIComponents ui) {
-    this.ui = ui;
-  }
-  void startSignIn()async {
+  
+  void startSignIn() async {
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevent dismissing the popup by tapping outside
+      barrierDismissible:
+          false, // Prevent dismissing the popup by tapping outside
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Loading'),
+          backgroundColor: uic.primarySwatch,
+          title: Text('Loading',
+              style: TextStyle(
+                color: uic.textcolor,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              )),
           content: Row(
             children: [
-              CircularProgressIndicator(), // Loading indicator
+              CircularProgressIndicator(
+                color: uic.textcolor,
+              ), // Loading indicator
               SizedBox(width: 16.0),
-              Text('Please wait...'),
+              Text('Please wait...',
+                  style: TextStyle(
+                    color: uic.textcolor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  )),
             ],
           ),
         );
@@ -56,8 +69,16 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         ));
         Navigator.of(context).pop();
         Navigator.of(context).pushReplacementNamed('/home');
-        
-      } else {
+      }else if (value.toString()=='null') {
+        print(value);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('user not found'),
+          duration: Duration(seconds: 2),
+        ));
+        Navigator.of(context).pop();
+      } 
+      
+      else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(value.toString()),
           duration: Duration(seconds: 2),
@@ -67,18 +88,32 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     });
   }
 
-  void startSignUp() async{
+  void startSignUp() async {
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevent dismissing the popup by tapping outside
+      barrierDismissible:
+          false, // Prevent dismissing the popup by tapping outside
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Loading'),
+          backgroundColor: uic.primarySwatch,
+          title: Text('Loading',
+              style: TextStyle(
+                color: uic.textcolor,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              )),
           content: Row(
             children: [
-              CircularProgressIndicator(), // Loading indicator
+              CircularProgressIndicator(
+                color: uic.textcolor,
+              ), // Loading indicator
               SizedBox(width: 16.0),
-              Text('Please wait...'),
+              Text('Please wait...',
+                  style: TextStyle(
+                    color: uic.textcolor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  )),
             ],
           ),
         );
@@ -105,7 +140,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       return;
     }
 
-    await signUp(emailsignup.text, passwordsignup.text, name.text).then((value) {
+    await signUp(emailsignup.text, passwordsignup.text, name.text)
+        .then((value) {
+     // value.toString().contains('null');
       if (value == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Sign up successful'),
@@ -113,7 +150,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         ));
         Navigator.of(context).pop();
         Navigator.of(context).pushReplacementNamed('/home');
-      } else {
+      }  else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(value.toString()),
           duration: Duration(seconds: 2),
@@ -121,9 +158,35 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         Navigator.of(context).pop();
       }
     });
-    
   }
-
+  void forgetPass()async{
+    if(useremail.text.isEmpty){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Please enter email'),
+          duration: Duration(seconds: 2),
+        ));
+      return;
+    }
+    //show snack bar
+    //send email using forget password function
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Email sent'),
+          duration: Duration(seconds: 2),
+        ));
+    await forgetPassword(useremail.text).then((value){
+      if(value=='success'){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Email sent'),
+          duration: Duration(seconds: 2),
+        ));
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value.toString()),
+          duration: Duration(seconds: 2),
+        ));
+      }
+    });
+  }
   void _showSignUp() {
     Future.delayed(Duration(milliseconds: 100), () {
       showModalBottomSheet(
@@ -202,7 +265,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           body: Container(
             //alignment: Alignment.center,
             decoration: BoxDecoration(
-                color: ui.primarySwatch,
+                color: uic.primarySwatch,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20))),
@@ -217,26 +280,26 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       style: TextStyle(
                           fontSize: 35,
                           fontWeight: FontWeight.bold,
-                          color: ui.textcolor),
+                          color: uic.textcolor),
                       'Sign in',
                       textAlign: TextAlign.center,
                     ),
                     IconButton(
                         onPressed: () {
                           setState(() {
-                            ui.changeTheme();
+                            uic.changeTheme();
                           });
                         },
                         icon: Icon(
-                          ui.isDark ? Icons.wb_sunny : Icons.nightlight_round,
-                          color: ui.textcolor,
+                          uic.isDark ? Icons.wb_sunny : Icons.nightlight_round,
+                          color: uic.textcolor,
                         ))
                   ],
                 ),
                 Row(
                   children: [
                     Text('New User? ',
-                        style: TextStyle(fontSize: 14, color: ui.textcolor)),
+                        style: TextStyle(fontSize: 14, color: uic.textcolor)),
                     TextButton(
                         onPressed: () {
                           Navigator.pop(context);
@@ -254,13 +317,13 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 TextField(
                     cursorColor: Color(0xffE1BA48),
                     style: TextStyle(
-                      color: ui.textcolor,
+                      color: uic.textcolor,
                     ),
                     controller: useremail,
                     decoration: InputDecoration(
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: ui.textcolor,
+                          color: uic.textcolor,
                         ),
                       ),
                       focusedBorder: UnderlineInputBorder(
@@ -269,7 +332,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         ),
                       ),
                       hintText: 'Email address ',
-                      hintStyle: TextStyle(color: ui.textcolor),
+                      hintStyle: TextStyle(color: uic.textcolor),
                     )),
                 SizedBox(
                   height: 20,
@@ -278,13 +341,13 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     obscureText: _obscureText,
                     cursorColor: Color(0xffE1BA48),
                     style: TextStyle(
-                      color: ui.textcolor,
+                      color: uic.textcolor,
                     ),
                     controller: password,
                     decoration: InputDecoration(
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: ui.textcolor,
+                            color: uic.textcolor,
                           ),
                         ),
                         focusedBorder: UnderlineInputBorder(
@@ -293,7 +356,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           ),
                         ),
                         hintText: 'password ',
-                        hintStyle: TextStyle(color: ui.textcolor),
+                        hintStyle: TextStyle(color: uic.textcolor),
                         suffix: IconButton(
                           onPressed: () {
                             setState(() {
@@ -330,7 +393,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         },
                         child: Text(
                           'Continue',
-                          style: TextStyle(color: ui.textcolor),
+                          style: TextStyle(color: uic.textcolor),
                         ))
                   ],
                 )
@@ -353,7 +416,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           body: Container(
             //alignment: Alignment.center,
             decoration: BoxDecoration(
-                color: ui.primarySwatch,
+                color: uic.primarySwatch,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20))),
@@ -368,26 +431,26 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       style: TextStyle(
                           fontSize: 35,
                           fontWeight: FontWeight.bold,
-                          color: ui.textcolor),
+                          color: uic.textcolor),
                       'Sign up',
                       textAlign: TextAlign.center,
                     ),
                     IconButton(
                         onPressed: () {
                           setState(() {
-                            ui.changeTheme();
+                            uic.changeTheme();
                           });
                         },
                         icon: Icon(
-                          ui.isDark ? Icons.wb_sunny : Icons.nightlight_round,
-                          color: ui.textcolor,
+                          uic.isDark ? Icons.wb_sunny : Icons.nightlight_round,
+                          color: uic.textcolor,
                         ))
                   ],
                 ),
                 Row(
                   children: [
                     Text('Existing user? ',
-                        style: TextStyle(fontSize: 14, color: ui.textcolor)),
+                        style: TextStyle(fontSize: 14, color: uic.textcolor)),
                     TextButton(
                         onPressed: () {
                           Navigator.pop(context);
@@ -405,13 +468,13 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 TextField(
                     cursorColor: Color(0xffE1BA48),
                     style: TextStyle(
-                      color: ui.textcolor,
+                      color: uic.textcolor,
                     ),
                     controller: name,
                     decoration: InputDecoration(
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: ui.textcolor,
+                          color: uic.textcolor,
                         ),
                       ),
                       focusedBorder: UnderlineInputBorder(
@@ -420,7 +483,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         ),
                       ),
                       hintText: 'Name ',
-                      hintStyle: TextStyle(color: ui.textcolor),
+                      hintStyle: TextStyle(color: uic.textcolor),
                     )),
                 SizedBox(
                   height: 20,
@@ -428,13 +491,13 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 TextField(
                     cursorColor: Color(0xffE1BA48),
                     style: TextStyle(
-                      color: ui.textcolor,
+                      color: uic.textcolor,
                     ),
                     controller: emailsignup,
                     decoration: InputDecoration(
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: ui.textcolor,
+                          color: uic.textcolor,
                         ),
                       ),
                       focusedBorder: UnderlineInputBorder(
@@ -443,19 +506,19 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         ),
                       ),
                       hintText: 'Email address ',
-                      hintStyle: TextStyle(color: ui.textcolor),
+                      hintStyle: TextStyle(color: uic.textcolor),
                     )),
                 TextField(
                     obscureText: _obscureText,
                     cursorColor: Color(0xffE1BA48),
                     style: TextStyle(
-                      color: ui.textcolor,
+                      color: uic.textcolor,
                     ),
                     controller: passwordsignup,
                     decoration: InputDecoration(
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: ui.textcolor,
+                            color: uic.textcolor,
                           ),
                         ),
                         focusedBorder: UnderlineInputBorder(
@@ -464,7 +527,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           ),
                         ),
                         hintText: 'password ',
-                        hintStyle: TextStyle(color: ui.textcolor),
+                        hintStyle: TextStyle(color: uic.textcolor),
                         suffix: IconButton(
                             onPressed: () {
                               setState(() {
@@ -481,13 +544,13 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     obscureText: _obscureText2,
                     cursorColor: Color(0xffE1BA48),
                     style: TextStyle(
-                      color: ui.textcolor,
+                      color: uic.textcolor,
                     ),
                     controller: confirmpassword,
                     decoration: InputDecoration(
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: ui.textcolor,
+                            color: uic.textcolor,
                           ),
                         ),
                         focusedBorder: UnderlineInputBorder(
@@ -496,7 +559,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           ),
                         ),
                         hintText: 'confirm password ',
-                        hintStyle: TextStyle(color: ui.textcolor),
+                        hintStyle: TextStyle(color: uic.textcolor),
                         suffix: IconButton(
                             onPressed: () {
                               setState(() {
@@ -525,7 +588,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       },
                       child: Text(
                         'Continue',
-                        style: TextStyle(color: ui.textcolor),
+                        style: TextStyle(color: uic.textcolor),
                       )),
                 )
               ],

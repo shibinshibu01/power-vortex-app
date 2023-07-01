@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:powervortex/global.dart';
 import 'screens/splash.dart';
 import 'screens/home.dart';
 import 'obj/ui.dart';
@@ -10,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'screens/login.dart';
+import 'screens/profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,8 +32,8 @@ class Vortex extends StatelessWidget {
       routes: {
         '/': (context) => Splash(ui: ui),
         //'/second': (context) => const SecondPage(title: 'Second Page'),
-        '/home': (context) => Body(ui: ui),
-        '/login':(context) => Login(ui: ui),
+        '/home': (context) => Body(),
+        '/login': (context) => Login(ui: ui),
       },
       theme: ThemeData(
           // primarySwatch: ui.primarySwatch,
@@ -59,17 +61,17 @@ class Vortex extends StatelessWidget {
 }
 
 class Body extends StatefulWidget {
-  UIComponents ui;
-  Body({super.key, required this.ui});
+  
+  Body({super.key});
 
   @override
-  State<Body> createState() => _BodyState(ui);
+  State<Body> createState() => _BodyState();
 }
 
 class _BodyState extends State<Body> {
   GlobalKey<SliderDrawerState> _key = GlobalKey<SliderDrawerState>();
-  UIComponents ui;
-  _BodyState(this.ui);
+  
+  
   PageController _pageController = PageController();
   int _pageIndex = 0;
   @override
@@ -77,11 +79,13 @@ class _BodyState extends State<Body> {
     return Scaffold(
         floatingActionButton: _pageIndex == 1
             ? FloatingActionButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
                 child: Icon(Icons.add),
-                backgroundColor: ui.selectioncolor,
+                backgroundColor: uic.secondary,
                 onPressed: () {})
             : null,
-        backgroundColor: ui.background,
+        backgroundColor: uic.background,
         // appBar: AppBar(
         //   backgroundColor: ui.primarySwatch,
         //   leading: IconButton(
@@ -99,43 +103,44 @@ class _BodyState extends State<Body> {
             key: _key,
             slideDirection: SlideDirection.RIGHT_TO_LEFT,
             appBar: SliderAppBar(
-              trailing:Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: Image(image: AssetImage('assets/logotext.png')),
-                  ), 
-                
-                drawerIconColor: ui.textcolor,
-                appBarColor: ui.background,
-                title: Text('')
-                        ),
+                trailing: Padding(
+                  padding: const EdgeInsets.all(1.0),
+                  child: Image(image: AssetImage('assets/logotext.png')),
+                ),
+                drawerIconColor: uic.textcolor,
+                appBarColor: uic.background,
+                title: Text('')),
             slider: Container(
               alignment: Alignment.center,
-              color: ui.primarySwatch,
+              color: uic.primarySwatch,
               child: ListView(
                 children: [
                   CircleAvatar(
                     radius: 80,
-                    backgroundColor: ui.selectioncolor,
+                    backgroundColor: uic.selectioncolor,
                     child: CircleAvatar(
                       radius: 75,
                       backgroundImage: AssetImage('assets/logotransparent.png'),
                     ),
                   ),
-                  slideOption('Settings', Icons.settings),
-                  slideOption('About', Icons.info),
-                  slideOption('Logout', Icons.logout),
+                  slideOption('Settings', Icons.settings, () {}),
+                  slideOption('About', Icons.info, () {}),
+                  slideOption('Profile', Icons.person, () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Profile()));
+                  }),
                   const SizedBox(
                     height: 20,
                   ),
                   ListTile(
                     leading: Icon(
                       Icons.brightness_3,
-                      color: ui.textcolor,
+                      color: uic.textcolor,
                     ),
                     title: Text(
                       'Dark Mode',
                       style: TextStyle(
-                        color: ui.textcolor,
+                        color: uic.textcolor,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -145,36 +150,34 @@ class _BodyState extends State<Body> {
                       // activeThumbImage: AssetImage('assets/moon.png'),
                       // activeColor: ui.textcolor,
                       // inactiveThumbImage: AssetImage('assets/sun.png'),
-                      activeColor: ui.textcolor,
-                      value: ui.isDark,
+                      activeColor: uic.textcolor,
+                      value: uic.isDark,
                       onChanged: (value) => setState(() {
-                        ui.changeTheme();
+                        uic.changeTheme();
                       }),
                     ),
                   ),
                   ListTile(
+                    onTap: () async {
+                      await FirebaseAuth.instance.signOut();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Logged out'),
+                          duration: Duration(seconds: 1),
+                        ),
+                      );
+                      Navigator.pushNamed(context, '/login');
+                    },
                     leading: Icon(
                       Icons.logout,
-                      color: ui.yellow,
+                      color: uic.yellow,
                     ),
-                    title: TextButton(
-                      onPressed: () async {
-                        await FirebaseAuth.instance.signOut();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Logged out'),
-                            duration: Duration(seconds: 1),
-                          ),
-                        );
-                        Navigator.pushNamed(context, '/login');
-                      },
-                      child: Text(
-                        'Logout',
-                        style: TextStyle(
-                          color: ui.textcolor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    title: Text(
+                      'Logout',
+                      style: TextStyle(
+                        color: uic.textcolor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   )
@@ -184,14 +187,14 @@ class _BodyState extends State<Body> {
             child: Container(
               height: double.infinity,
               width: double.infinity,
-              color: ui.background,
+              color: uic.background,
               child: PageView(
                 physics: NeverScrollableScrollPhysics(),
                 controller: _pageController,
                 children: [
-                  Home(ui: ui),
-                  Schedule(ui: ui),
-                  DashBoard(ui: ui),
+                  Home(ui: uic),
+                  Schedule(ui: uic),
+                  DashBoard(ui: uic),
                 ],
               ),
             ),
@@ -200,13 +203,15 @@ class _BodyState extends State<Body> {
         bottomNavigationBar: GNav(
           gap: 5,
           tabMargin: EdgeInsets.symmetric(horizontal: 4, vertical: 10),
-          tabActiveBorder: Border.all(color: ui.textcolor, width: 0.2),
+          tabActiveBorder: Border.all(color: uic.textcolor, width: 0.2),
           padding: EdgeInsets.all(10),
-          tabBackgroundColor: ui.secondary,
-          backgroundColor: ui.primarySwatch,
-          color: ui.textcolor,
-          activeColor: ui.background,
+          tabBackgroundColor: uic.secondary,
+          backgroundColor: uic.primarySwatch,
+          color: uic.textcolor,
+          activeColor: uic.background,
           onTabChange: (value) => setState(() {
+            //print(currentuser!.email);
+            _key.currentState!.closeSlider();
             _pageIndex = value;
             _pageController.animateToPage(value,
                 duration: Duration(milliseconds: 300), curve: Curves.ease);
@@ -229,15 +234,16 @@ class _BodyState extends State<Body> {
         ));
   }
 
-  ListTile slideOption(String title, IconData icon) {
+  ListTile slideOption(String title, IconData icon, void Function() onTap) {
     return ListTile(
+      onTap: onTap,
       leading: Icon(
         icon,
-        color: ui.textcolor,
+        color: uic.textcolor,
       ),
       title: Text(title,
           style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w700, color: ui.textcolor)),
+              fontSize: 18, fontWeight: FontWeight.w700, color: uic.textcolor)),
       // onTap: () => setState(() {
       //   _pageIndex = index;
       //   _pageController.animateToPage(index,

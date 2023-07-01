@@ -30,11 +30,17 @@ class _SplashState extends State<Splash> {
     ///ui = UIComponents();
     await ui.init();
     auth.authStateChanges().listen((User? user) {
-    currentuser=user;
-      });
+      currentuser = user;
+      userdetails = UserDetails(
+        name: user!.displayName!,
+        email: user.email!,
+        uid: user.uid,
+      );
+    });
+    uic = ui;
     await Future.delayed(Duration(seconds: 3));
     if (auth.currentUser != null) {
-      return Future.value(new Body(ui: ui));
+      return Future.value(new Body());
     }
     return Future.value(new Login(ui: ui));
   }

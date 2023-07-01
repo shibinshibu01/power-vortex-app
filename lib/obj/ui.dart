@@ -37,6 +37,7 @@ class LightTheme {
   Color splash = Color(0xff20466A);
   Color switchon = Color(0xff4D4D4D);
   Color switchoff = Color(0x884D4D4D);
+  Color yellow = Color(0xffA78521);
 }
 
 class DarkTheme {
@@ -71,6 +72,7 @@ class DarkTheme {
   Color splash = Color(0xff000F21);
   Color switchon = Color(0xffE1BA48);
   Color switchoff = Color(0x88E1BA48);
+  Color yellow = Color(0xffE1BA48);
 }
 
 class UIComponents {
@@ -95,7 +97,7 @@ class UIComponents {
   late Color switchon;
   late Color switchoff;
   late Color secondary;
-  Color yellow = Color(0xffE1BA48);
+  late Color yellow ;
   Future changeTheme() async {
     if (isDark) {
       primarySwatch = lightTheme.primarySwatch;
@@ -107,6 +109,7 @@ class UIComponents {
       switchon = lightTheme.switchon;
       switchoff = lightTheme.switchoff;
       secondary = lightTheme.secondary;
+      yellow = lightTheme.yellow;
       isDark = false;
     } else {
       primarySwatch = darkTheme.primarySwatch;
@@ -118,6 +121,7 @@ class UIComponents {
       switchon = darkTheme.switchon;
       switchoff = darkTheme.switchoff;
       secondary = darkTheme.secondary;
+      yellow = darkTheme.yellow;
       isDark = true;
     }
 

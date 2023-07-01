@@ -18,7 +18,8 @@ String generateID(int length) {
 }
 
 enum DeviceType { fan, light, tv, ac, fridge, washingMachine, other }
-enum RoomType{bedroom, livingroom, kitchen, bathroom, other}
+
+enum RoomType { bedroom, livingroom, kitchen, bathroom, other }
 
 class Device {
   String did;
@@ -48,11 +49,19 @@ class Board {
 
 class Room {
   String rid;
+  String name;
   AssetImage lightimage;
   AssetImage darkimage;
   List<Board> boards;
   RoomType type;
-  Room({required this.rid, required this.boards, required this.type,required this.lightimage,required this.darkimage});
+
+  Room(
+      {required this.rid,
+      required this.boards,
+      required this.type,
+      required this.lightimage,
+      required this.darkimage,
+      required this.name}) {}
   double getRoomConsumption() {
     double consumption = 0;
     for (var board in boards) {
@@ -72,6 +81,7 @@ class HomeDetails {
   String hid;
   List<Room> rooms;
   List<User> users;
+  List<Device> activeDevices = [];
   HomeDetails({required this.hid, required this.rooms, required this.users});
   double getTotalConsumption() {
     double consumption = 0;
@@ -94,15 +104,15 @@ class UserDetails {
   String uid;
   String name;
   String email;
-  String phone;
-  DateTime dob;
+  // String phone;
+  // DateTime dob;
   List<HomeDetails> homes = [];
   UserDetails({
     required this.uid,
     required this.name,
     required this.email,
-    required this.phone,
-    required this.dob,
+    // required this.phone,
+    // required this.dob,
   });
 
   void addHome(HomeDetails home) {
