@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:powervortex/obj/objects.dart';
 import '../global.dart';
 import '../database/auth.dart';
+import '../database/collections.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -11,6 +12,11 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  List<Room> rooms = [];
+  List<Board> boards = [];
+  TextEditingController _buildingname = TextEditingController();
+  TextEditingController _roomname = TextEditingController();
+  TextEditingController _boardid = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,6 +104,7 @@ class _ProfileState extends State<Profile> {
                         borderRadius: BorderRadius.circular(20))),
                 onPressed: () async {
                   showDialog(
+                    
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
@@ -137,7 +144,7 @@ class _ProfileState extends State<Profile> {
                                 ))
                           ],
                         );
-                      });
+                      }).then((value) => setState(() {}));
 
                   //Navigator.pushNamed(context, '/login');
                 },
@@ -165,7 +172,7 @@ class _ProfileState extends State<Profile> {
                       crossAxisCount: 3,
                       childAspectRatio: 1,
                       crossAxisSpacing: 10,
-                      mainAxisSpacing: 10),
+                      mainAxisSpacing: 410),
                   itemBuilder: (BuildContext context, int index) {
                     return index == userdetails.homes.length
                         ? GestureDetector(
@@ -243,80 +250,209 @@ class _ProfileState extends State<Profile> {
         ));
   }
 
-  Container addBuildingSheet(BuildContext context) {
-    return Container(
-      height: 600,
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.transparent,
-        body: Container(
-          decoration: BoxDecoration(
-            color: uic.isDark ? uic.yellow : uic.primarySwatch,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-          ),
-          height: 500,
-          child: ListView(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                'Add Building',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: TextFormField(
-                  style: TextStyle(color: Colors.black),
-                  decoration: InputDecoration(
-                    labelText: 'Building Name',
-                    labelStyle: TextStyle(color: Colors.black),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black, width: 2),
-                    ),
+  StatefulBuilder addBuildingSheet(BuildContext context) {
+    return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+      return Container(
+        height: 700,
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: Colors.transparent,
+          body: Container(
+            decoration: BoxDecoration(
+              color: uic.isDark ? uic.yellow : uic.primarySwatch,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            ),
+            height: 600,
+            child: ListView(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Text(
+                    'Setup Building',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 42,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: TextFormField(
-                  style: TextStyle(color: Colors.black),
-                  decoration: InputDecoration(
-                    labelText: 'Building Name',
-                    labelStyle: TextStyle(color: Colors.black),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black, width: 2),
-                    ),
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Text(
+                    'Add/Edit buildings',
+                    style: TextStyle(color: Colors.black, fontSize: 18),
                   ),
                 ),
-              ),
-              
-              ElevatedButton(onPressed: (){
 
-                
-              }, child: Text('Add Building'),style: ElevatedButton.styleFrom(
-                primary: uic.background,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: TextFormField(
+                    controller: _buildingname,
+                    style: TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                      labelText: 'Building Name',
+                      labelStyle: TextStyle(color: Colors.black),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 2),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: TextFormField(
+                    controller: _roomname,
+                    style: TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                      hintText: 'Room Name',
+                      labelText: 'Create Room',
+                      labelStyle: TextStyle(color: Colors.black),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 2),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                  child: TextFormField(
+                    controller: _boardid,
+                    style: TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                      suffix: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              boards
+                                  .add(Board(bid: _boardid.text, devices: []));
+                              rooms.add(Room(
+                                  rid: generateID(10),
+                                  boards: [
+                                    Board(bid: _boardid.text, devices: [])
+                                  ],
+                                  type: RoomType.other,
+                                  lightimage: AssetImage('assets/room1.png'),
+                                  darkimage:
+                                      AssetImage('assets/room1_dark.png'),
+                                  name: _roomname.text));
+                            });
+                          },
+                          child: Icon(
+                            Icons.add_box,
+                          )),
+                      labelText: 'Board Id',
+                      labelStyle: TextStyle(color: Colors.black),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 2),
+                      ),
+                    ),
+                  ),
+                ),
+
+                Container(
+                  padding: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width,
+                  height: 90,
+                  child: rooms.isEmpty
+                      ? Center(
+                          child: Text(
+                            'No Rooms Added',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: rooms.length,
+                          itemBuilder: (context, index) {
+                            return Row(
+                              children: [
+                                Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: Colors.transparent,
+                                        border:
+                                            Border.all(color: Colors.black)),
+                                    padding: EdgeInsets.all(10),
+                                    //color: Colors.red,
+                                    height: 45,
+                                    //width: 100,
+                                    child: Row(
+                                      children: [
+                                        Center(
+                                            child: Text(
+                                          rooms[index].name,
+                                          style: TextStyle(color: Colors.black),
+                                        )),
+                                        GestureDetector(
+                                          child: Icon(
+                                            Icons.close,
+                                            color: Colors.black,
+                                          ),
+                                          onTap: () {
+                                            setState(() {
+                                              boards.removeAt(index);
+                                              rooms.removeAt(index);
+                                            });
+                                          },
+                                        )
+                                      ],
+                                    )),
+                                SizedBox(
+                                  width: 10,
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                ),
+                //ListView.builder(itemBuilder: item)
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      setState(() {
+                        _buildingname.text = '';
+                        _roomname.text = '';
+                        _boardid.text = '';
+                        userdetails.homes.add(HomeDetails(
+                            name: _buildingname.text,
+                            rooms: rooms,
+                            hid: generateID(10),
+                            users: [userdetails]));
+                      });
+                      await updateUserHomes();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Text(
+                        'Confirm',
+                        style: TextStyle(color: uic.textcolor, fontSize: 18),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                        primary: uic.background,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15))),
+                  ),
                 )
-              ),)
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

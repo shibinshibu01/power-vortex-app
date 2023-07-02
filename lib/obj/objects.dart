@@ -79,10 +79,11 @@ class Room {
 
 class HomeDetails {
   String hid;
+  String name;
   List<Room> rooms;
-  List<User> users;
+  List<UserDetails> users;
   List<Device> activeDevices = [];
-  HomeDetails({required this.hid, required this.rooms, required this.users});
+  HomeDetails({required this.name, required this.hid, required this.rooms, required this.users});
   double getTotalConsumption() {
     double consumption = 0;
     for (var room in rooms) {
@@ -95,7 +96,7 @@ class HomeDetails {
     rooms.add(room);
   }
 
-  void addUser(User user) {
+  void addUser(UserDetails user) {
     users.add(user);
   }
 }
