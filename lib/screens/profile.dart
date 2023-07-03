@@ -104,7 +104,6 @@ class _ProfileState extends State<Profile> {
                         borderRadius: BorderRadius.circular(20))),
                 onPressed: () async {
                   showDialog(
-                    
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
@@ -202,7 +201,8 @@ class _ProfileState extends State<Profile> {
                                 ],
                               ),
                             ),
-                            onTap: () {
+                            onTap: () async {
+                              textdb();
                               //show modelbottomsheet
                               showModalBottomSheet(
                                   backgroundColor: uic.isDark
