@@ -12,7 +12,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> with TickerProviderStateMixin {
-  
   TextEditingController emailsignup = TextEditingController();
   TextEditingController passwordsignup = TextEditingController();
   TextEditingController name = TextEditingController();
@@ -21,7 +20,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   TextEditingController confirmpassword = TextEditingController();
   bool _obscureText = true;
   bool _obscureText2 = true;
-  
+
   void startSignIn() async {
     showDialog(
       context: context,
@@ -69,16 +68,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         ));
         Navigator.of(context).pop();
         Navigator.of(context).pushReplacementNamed('/home');
-      }else if (value.toString()=='null') {
+      } else if (value.toString() == 'null') {
         print(value);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('user not found'),
           duration: Duration(seconds: 2),
         ));
         Navigator.of(context).pop();
-      } 
-      
-      else {
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(value.toString()),
           duration: Duration(seconds: 2),
@@ -142,7 +139,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
     await signUp(emailsignup.text, passwordsignup.text, name.text)
         .then((value) {
-     // value.toString().contains('null');
+      // value.toString().contains('null');
       if (value == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Sign up successful'),
@@ -150,7 +147,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         ));
         Navigator.of(context).pop();
         Navigator.of(context).pushReplacementNamed('/home');
-      }  else {
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(value.toString()),
           duration: Duration(seconds: 2),
@@ -159,27 +156,28 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       }
     });
   }
-  void forgetPass()async{
-    if(useremail.text.isEmpty){
+
+  void forgetPass() async {
+    if (useremail.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Please enter email'),
-          duration: Duration(seconds: 2),
-        ));
+        content: Text('Please enter email'),
+        duration: Duration(seconds: 2),
+      ));
       return;
     }
     //show snack bar
     //send email using forget password function
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Email sent'),
-          duration: Duration(seconds: 2),
-        ));
-    await forgetPassword(useremail.text).then((value){
-      if(value=='success'){
+      content: Text('Email sent'),
+      duration: Duration(seconds: 2),
+    ));
+    await forgetPassword(useremail.text).then((value) {
+      if (value == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Email sent'),
           duration: Duration(seconds: 2),
         ));
-      }else{
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(value.toString()),
           duration: Duration(seconds: 2),
@@ -187,6 +185,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       }
     });
   }
+
   void _showSignUp() {
     Future.delayed(Duration(milliseconds: 100), () {
       showModalBottomSheet(
@@ -374,7 +373,11 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          forgetPassword(useremail.text);
+                          //show snackbar please check ur email
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please check your email')));
+                        },
                         child: Text(
                           'Forgot Password?',
                           style: TextStyle(

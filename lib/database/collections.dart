@@ -18,23 +18,14 @@ Future updateUserHomes() async {
       uids.add(user.uid);
     }
     for (Room room in home.rooms) {
-      uids.add(room.rid);
+      rooms.add(room.rid);
     }
-    final dbRef = await FirebaseDatabase.instance.ref();
-    await homeref.child(home.hid).child("users").set(uids);
-    await homeref.child(home.hid).child("rooms").set(rooms);
-  }
-}
 
-void textdb() async {
-  final ref = await FirebaseDatabase.instance
-      .ref()
-      .child("test")
-      .child(currentuser!.uid)
-      .set(["hello", "world"]);
-  final ref2 = await FirebaseDatabase.instance
-      .ref()
-      .child("test")
-      .child(currentuser!.uid)
-      .update({"hello": "world"});
+    print(rooms);
+    print(uids);
+    final dbRef =
+        await FirebaseDatabase.instance.ref().child('homes').child(home.hid);
+    await dbRef.child("users").set(uids);
+    await dbRef.child("rooms").set(rooms);
+  }
 }

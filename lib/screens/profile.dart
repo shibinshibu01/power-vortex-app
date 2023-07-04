@@ -14,6 +14,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   List<Room> rooms = [];
   List<Board> boards = [];
+
   TextEditingController _buildingname = TextEditingController();
   TextEditingController _roomname = TextEditingController();
   TextEditingController _boardid = TextEditingController();
@@ -55,7 +56,7 @@ class _ProfileState extends State<Profile> {
           ],
         ),
         backgroundColor: uic.primarySwatch,
-        body: Column(
+        body: ListView(
           children: [
             SizedBox(
               height: 20,
@@ -78,79 +79,76 @@ class _ProfileState extends State<Profile> {
             SizedBox(
               height: 20,
             ),
-            Text(
-              currentuser!.displayName!,
-              style: TextStyle(
-                  color: uic.textcolor,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                currentuser!.displayName!,
+                style: TextStyle(
+                    color: uic.textcolor,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
             //SizedBox(height: 20,),
-            Text(
-              currentuser!.email!,
-              style: TextStyle(
-                  color: uic.textcolor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold),
+            Align(
+
+              child: Text(
+                currentuser!.email!,
+                style: TextStyle(
+                    color: uic.textcolor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
             SizedBox(
               height: 20,
             ),
 
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    primary: uic.yellow,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20))),
-                onPressed: () async {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          backgroundColor: uic.primarySwatch,
-                          title: Text('Alert! you are about to logout',
-                              style: TextStyle(color: uic.textcolor)),
-                          content: Text('Are you sure you want to log out?',
-                              style: TextStyle(color: uic.textcolor)),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  'Cancel',
-                                  style: TextStyle(color: uic.yellow),
-                                )),
-                            TextButton(
-                                onPressed: () async {
-                                  await signOut().then((value) {
-                                    if (value == 'Success') {
-                                      Navigator.pushNamed(context, '/login');
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(value),
-                                          duration: Duration(seconds: 1),
-                                        ),
-                                      );
-                                    }
-                                  });
-                                },
-                                child: Text(
-                                  'Log Out',
-                                  style: TextStyle(color: Colors.red),
-                                ))
-                          ],
-                        );
-                      }).then((value) => setState(() {}));
-
-                  //Navigator.pushNamed(context, '/login');
-                },
-                child: Text(
-                  'Log Out',
-                  style: TextStyle(color: uic.background, fontSize: 18),
-                )),
+            Align(
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: uic.yellow,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20))),
+                  onPressed: () async {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: uic.primarySwatch,
+                            title: Text('Alert! you are about to logout',
+                                style: TextStyle(color: uic.textcolor)),
+                            content: Text('Are you sure you want to log out?',
+                                style: TextStyle(color: uic.textcolor)),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    'Cancel',
+                                    style: TextStyle(color: uic.yellow),
+                                  )),
+                              TextButton(
+                                  onPressed: () async {
+                                    Navigator.pop(context);
+                                    signOutfn();
+                                  },
+                                  child: Text(
+                                    'Log Out',
+                                    style: TextStyle(color: Colors.red),
+                                  ))
+                            ],
+                          );
+                        }).then((value) => setState(() {}));
+            
+                    //Navigator.pushNamed(context, '/login');
+                  },
+                  child: Text(
+                    'Log Out',
+                    style: TextStyle(color: uic.background, fontSize: 18),
+                  )),
+            ),
             SizedBox(height: 20),
             Container(
               padding: EdgeInsets.only(left: 20),
@@ -202,7 +200,7 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                             onTap: () async {
-                              textdb();
+                              // textdb();
                               //show modelbottomsheet
                               showModalBottomSheet(
                                   backgroundColor: uic.isDark
@@ -215,7 +213,9 @@ class _ProfileState extends State<Profile> {
                                   context: context,
                                   builder: (context) {
                                     return addBuildingSheet(context);
-                                  });
+                                  }).then((value) {
+                                setState(() {});
+                              });
                             },
                           )
                         : Container(
@@ -235,7 +235,7 @@ class _ProfileState extends State<Profile> {
                                   height: 10,
                                 ),
                                 Text(
-                                  'Building ${index + 1}',
+                                  userdetails.homes[index].name,
                                   style: TextStyle(
                                       color: uic.textcolor,
                                       fontSize: 18,
@@ -424,16 +424,18 @@ class _ProfileState extends State<Profile> {
                   child: ElevatedButton(
                     onPressed: () async {
                       setState(() {
-                        _buildingname.text = '';
-                        _roomname.text = '';
-                        _boardid.text = '';
                         userdetails.homes.add(HomeDetails(
                             name: _buildingname.text,
                             rooms: rooms,
                             hid: generateID(10),
                             users: [userdetails]));
+                        _buildingname.text = '';
+                        _roomname.text = '';
+                        _boardid.text = '';
                       });
                       await updateUserHomes();
+
+                      Navigator.pop(context);
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(15),
@@ -453,6 +455,21 @@ class _ProfileState extends State<Profile> {
           ),
         ),
       );
+    });
+  }
+
+  void signOutfn() async {
+    await signOut().then((value) {
+      if (value == 'success') {
+        Navigator.pushReplacementNamed(context, '/login');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(value),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     });
   }
 }

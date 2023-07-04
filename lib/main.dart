@@ -127,7 +127,12 @@ class _BodyState extends State<Body> {
                   slideOption('About', Icons.info, () {}),
                   slideOption('Profile', Icons.person, () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Profile()));
+                        MaterialPageRoute(builder: (context) => Profile()))
+                        .then((value) {
+                          setState(() {
+                            
+                          });
+                        });
                   }),
                   const SizedBox(
                     height: 20,
@@ -166,7 +171,7 @@ class _BodyState extends State<Body> {
                           duration: Duration(seconds: 1),
                         ),
                       );
-                      Navigator.pushNamed(context, '/login');
+                      Navigator.pushReplacementNamed(context, '/login');
                     },
                     leading: Icon(
                       Icons.logout,
