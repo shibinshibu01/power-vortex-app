@@ -59,8 +59,8 @@ class Room {
       {required this.rid,
       required this.boards,
       required this.type,
-      required this.lightimage,
-      required this.darkimage,
+      this.lightimage = const AssetImage('assets/room1.png'),
+      this.darkimage = const AssetImage('assets/room1_dark.png'),
       required this.name}) {}
   double getRoomConsumption() {
     double consumption = 0;

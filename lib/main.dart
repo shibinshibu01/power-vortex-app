@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:powervortex/database/collections.dart';
 import 'package:powervortex/global.dart';
 import 'screens/splash.dart';
 import 'screens/home.dart';
@@ -61,7 +62,6 @@ class Vortex extends StatelessWidget {
 }
 
 class Body extends StatefulWidget {
-  
   Body({super.key});
 
   @override
@@ -70,8 +70,7 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   GlobalKey<SliderDrawerState> _key = GlobalKey<SliderDrawerState>();
-  
-  
+
   PageController _pageController = PageController();
   int _pageIndex = 0;
   @override
@@ -123,16 +122,16 @@ class _BodyState extends State<Body> {
                       backgroundImage: AssetImage('assets/logotransparent.png'),
                     ),
                   ),
-                  slideOption('Settings', Icons.settings, () {}),
+                  slideOption('Settings', Icons.settings, () {
+                    getHomeDetails(0);
+                  }),
                   slideOption('About', Icons.info, () {}),
                   slideOption('Profile', Icons.person, () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Profile()))
+                            MaterialPageRoute(builder: (context) => Profile()))
                         .then((value) {
-                          setState(() {
-                            
-                          });
-                        });
+                      setState(() {});
+                    });
                   }),
                   const SizedBox(
                     height: 20,
@@ -216,6 +215,7 @@ class _BodyState extends State<Body> {
           activeColor: uic.background,
           onTabChange: (value) => setState(() {
             //print(currentuser!.email);
+
             _key.currentState!.closeSlider();
             _pageIndex = value;
             _pageController.animateToPage(value,
