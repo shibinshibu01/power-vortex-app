@@ -91,7 +91,6 @@ class _ProfileState extends State<Profile> {
             ),
             //SizedBox(height: 20,),
             Align(
-
               child: Text(
                 currentuser!.email!,
                 style: TextStyle(
@@ -141,7 +140,7 @@ class _ProfileState extends State<Profile> {
                             ],
                           );
                         }).then((value) => setState(() {}));
-            
+
                     //Navigator.pushNamed(context, '/login');
                   },
                   child: Text(
@@ -424,6 +423,7 @@ class _ProfileState extends State<Profile> {
                   child: ElevatedButton(
                     onPressed: () async {
                       setState(() {
+                        rooms = [];
                         userdetails.homes.add(HomeDetails(
                             name: _buildingname.text,
                             rooms: rooms,

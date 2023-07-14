@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:powervortex/database/collections.dart';
 import 'package:powervortex/global.dart';
 import 'screens/splash.dart';
@@ -13,6 +14,7 @@ import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'screens/login.dart';
 import 'screens/profile.dart';
+import 'screens/about.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -102,9 +104,14 @@ class _BodyState extends State<Body> {
             key: _key,
             slideDirection: SlideDirection.RIGHT_TO_LEFT,
             appBar: SliderAppBar(
-                trailing: Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Image(image: AssetImage('assets/logotext.png')),
+                trailing: GestureDetector(
+                  onTap: () => setState(() {
+                    
+                  }),
+                  child: Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: Image(image: AssetImage('assets/logotext.png')),
+                  ),
                 ),
                 drawerIconColor: uic.textcolor,
                 appBarColor: uic.background,
@@ -122,10 +129,14 @@ class _BodyState extends State<Body> {
                       backgroundImage: AssetImage('assets/logotransparent.png'),
                     ),
                   ),
-                  slideOption('Settings', Icons.settings, () {
-                    getHomeDetails(0);
+                  slideOption('Settings', Icons.settings, () {}),
+                  slideOption('About', Icons.info, () {
+                    Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => About()))
+                        .then((value) {
+                      setState(() {});
+                    });
                   }),
-                  slideOption('About', Icons.info, () {}),
                   slideOption('Profile', Icons.person, () {
                     Navigator.push(context,
                             MaterialPageRoute(builder: (context) => Profile()))
@@ -241,7 +252,11 @@ class _BodyState extends State<Body> {
 
   ListTile slideOption(String title, IconData icon, void Function() onTap) {
     return ListTile(
-      onTap: onTap,
+      onTap: () async {
+        await HapticFeedback.vibrate();
+        onTap();
+       // _key.currentState!.closeSlider();
+      },
       leading: Icon(
         icon,
         color: uic.textcolor,

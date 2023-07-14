@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:powervortex/database/collections.dart';
 import 'package:powervortex/global.dart';
 import '../obj/ui.dart';
 import '../obj/objects.dart';
@@ -13,36 +14,23 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
- 
   @override
   void initState() {
     super.initState();
     if (currentHome != null) {
       rooms = userdetails.homes[0].rooms;
       activeDevices = currentHome!.activeDevices;
-    }
-    else{
-      rooms = userdetails.homes.isEmpty?[]:userdetails.homes[0].rooms;
+    } else {
+      rooms = userdetails.homes.isEmpty ? [] : userdetails.homes[0].rooms;
       activeDevices = [];
     }
-
   }
 
-  _HomeState() {
-    for (int i = 1; i <= 10; i++) {
-      // devices.add(Device(
-      //     did: generateID(6),
-      //     name: 'Device $i',
-      //     type: DeviceType.values[i % 6],
-      //     status: true,
-      //     consumption: 100));
-      // rooms.add(
-      //     Room(name:'Room $i',rid: generateID(6), boards: [], type: RoomType.values[i % 3] ,lightimage: lightimages[i%2],darkimage: darkimages[i%2]));
-    }
-  }
-  
-  HomeDetails? currentHome=null;
-  List<Device> activeDevices = [];
+  _HomeState() {}
+
+  HomeDetails? currentHome = null;
+  List<Device> activeDevices =
+      userdetails.homes.isEmpty ? [] : userdetails.homes[0].activeDevices;
   List<Room> rooms = [];
   List<AssetImage> lightimages = [
     AssetImage('assets/room1.png'),
@@ -135,11 +123,13 @@ class _HomeState extends State<Home> {
                                         onTap: () {
                                           activeDevices[index].status =
                                               !activeDevices[index].status;
+                                          changeStatus(activeDevices[index]);
                                           setState(() {});
                                           Future.delayed(Duration(seconds: 3),
                                               () {
                                             setState(() {
-                                              if (!activeDevices[index].status) {
+                                              if (!activeDevices[index]
+                                                  .status) {
                                                 activeDevices.removeAt(index);
                                               }
                                             });
@@ -225,7 +215,12 @@ class _HomeState extends State<Home> {
                                     MaterialPageRoute(
                                         builder: (context) => RoomPage(
                                               room: rooms[index],
-                                            )));
+                                            ))).then((value) => {
+                                      setState(() {
+                                        activeDevices =
+                                            userdetails.homes[0].activeDevices;
+                                      })
+                                    });
                               },
                               child: Stack(
                                 children: [

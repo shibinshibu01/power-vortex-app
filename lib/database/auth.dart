@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:powervortex/database/collections.dart';
+import 'package:powervortex/obj/objects.dart';
 import '../global.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -7,6 +9,11 @@ Future signIn(String email, String password) async {
     UserCredential userCredential = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     currentuser = userCredential.user;
+    userdetails = UserDetails(
+        uid: currentuser!.uid,
+        name: currentuser!.displayName ?? '',
+        email: email);
+    await getHomeDetails(0);
     return 'success';
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
@@ -25,7 +32,8 @@ Future signUp(String email, String password, String name) async {
     await userCredential.user!.sendEmailVerification();
     await userCredential.user!.updateDisplayName(name);
     await userCredential.user!.reload();
-    currentuser =FirebaseAuth.instance.currentUser;
+    currentuser = FirebaseAuth.instance.currentUser;
+    userdetails = UserDetails(uid: currentuser!.uid, name: name, email: email);
     final DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
     databaseReference.child('users').child(currentuser!.uid).set({
       'name': name,

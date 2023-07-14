@@ -21,18 +21,43 @@ enum DeviceType { fan, light, tv, ac, fridge, washingMachine, other }
 
 enum RoomType { bedroom, livingroom, kitchen, bathroom, other }
 
+DeviceType getDeviceType(type) {
+  switch (type) {
+    case 'DeviceType.fan':
+      return DeviceType.fan;
+    case 'DeviceType.light':
+      return DeviceType.light;
+    case 'DeviceType.tv':
+      return DeviceType.tv;
+    case 'DeviceType.ac':
+      return DeviceType.ac;
+    case 'DeviceType.fridge':
+      return DeviceType.fridge;
+    case 'DeviceType.washingMachine':
+      return DeviceType.washingMachine;
+    case 'DeviceType.other':
+      return DeviceType.other;
+  }
+  return DeviceType.other;
+}
+
 class Device {
   String did;
   String name;
   DeviceType type;
   bool status;
   double consumption;
+  int index;
+  String bid;
   Device(
       {required this.did,
       required this.name,
       required this.type,
       required this.status,
-      required this.consumption});
+      required this.consumption,
+      required this.index,
+      required this.bid
+      });
   double getConsumption() {
     return consumption;
   }
@@ -83,7 +108,11 @@ class HomeDetails {
   List<Room> rooms;
   List<UserDetails> users;
   List<Device> activeDevices = [];
-  HomeDetails({required this.name, required this.hid, required this.rooms, required this.users});
+  HomeDetails(
+      {required this.name,
+      required this.hid,
+      required this.rooms,
+      required this.users});
   double getTotalConsumption() {
     double consumption = 0;
     for (var room in rooms) {

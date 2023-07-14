@@ -9,6 +9,7 @@ import '../obj/ui.dart';
 import 'login.dart';
 import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../database/collections.dart';
 
 class Splash extends StatefulWidget {
   final UIComponents ui;
@@ -29,16 +30,17 @@ class _SplashState extends State<Splash> {
   Future<Widget> futureCall() async {
     ///ui = UIComponents();
     await ui.init();
-    auth.authStateChanges().listen((User? user) {
+    await auth.authStateChanges().listen((User? user) async{
       currentuser = user;
       userdetails = UserDetails(
         name: user!.displayName!,
         email: user.email!,
         uid: user.uid,
       );
+       await getHomeDetails(0).then((value) => null);
     });
     uic = ui;
-    await Future.delayed(Duration(seconds: 3));
+      await Future.delayed(Duration(seconds: 3));
     if (auth.currentUser != null) {
       return Future.value(new Body());
     }
