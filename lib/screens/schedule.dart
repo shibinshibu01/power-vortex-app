@@ -19,7 +19,7 @@ class _ScheduleState extends State<Schedule> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
            Text(
-            'Schedule',
+            'Coming Soon!',
             style: TextStyle(
               color: ui.textcolor,
               fontSize: 18,

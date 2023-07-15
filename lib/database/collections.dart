@@ -91,10 +91,10 @@ Future getHomeDetails(index) async {
         final dbRef = await FirebaseDatabase.instance.ref();
 
         for (Room room in userdetails.homes[index].rooms) {
-          dbRef.child('boards').once().then((value) {
+          await dbRef.child('boards').once().then((value) async {
             if (value.snapshot.hasChild(room.boards.first.bid)) {
-              print(room.boards.first.bid);
-              dbRef
+              //print(room.boards.first.bid);
+              await dbRef
                   .child('boards')
                   .child(room.boards.first.bid)
                   .once()
@@ -103,23 +103,25 @@ Future getHomeDetails(index) async {
                 List _devices = [];
                 for (int i = 1; i <= 5; i++) {
                   if (values.hasChild(i.toString())) {
-                    print(DeviceType.values[0]);
+                    // print(values.child('$i').value);
                     _devices.add(values.child('$i').value);
-                    for (var d in _devices) {
-                      // print(d);
-                      Device devicedetails = Device(
-                        index: i,
-                        bid: room.boards.first.bid,
-                        consumption: double.parse(d['consumption'].toString()),
-                        did: d['did'].toString(),
-                        name: d['name'].toString(),
-                        type: getDeviceType(d['type']),
-                        status: d['status'],
-                      );
-                      room.boards.first.devices.add(devicedetails);
-                      if(devicedetails.status)
+                    var d = _devices[i - 1];
+                    print(d);
+                    // print(d);
+
+                    Device devicedetails = Device(
+                      index: i,
+                      bid: room.boards.first.bid,
+                      consumption: double.parse(d['consumption'].toString()),
+                      did: d['did'].toString(),
+                      name: d['name'].toString(),
+                      type: getDeviceType(d['type']),
+                      status: d['status'],
+                    );
+                    print('adding');
+                    room.boards.first.devices.add(devicedetails);
+                    if (devicedetails.status)
                       userdetails.homes[index].activeDevices.add(devicedetails);
-                    }
                   }
                 }
               });
@@ -149,7 +151,13 @@ Future addDevice(Board board, index, Device device) async {
     });
   });
 }
+
 Future changeStatus(Device device) async {
   final dbRef = await FirebaseDatabase.instance.ref();
-  dbRef.child('boards').child(device.bid).child(device.index.toString()).child('status').set(device.status);
+  dbRef
+      .child('boards')
+      .child(device.bid)
+      .child(device.index.toString())
+      .child('status')
+      .set(device.status);
 }

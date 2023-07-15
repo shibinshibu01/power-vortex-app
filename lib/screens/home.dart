@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
 
   HomeDetails? currentHome = null;
   List<Device> activeDevices =
-      userdetails.homes.isEmpty ? [] : userdetails.homes[0].activeDevices;
+       userdetails.homes[0].activeDevices;
   List<Room> rooms = [];
   List<AssetImage> lightimages = [
     AssetImage('assets/room1.png'),
