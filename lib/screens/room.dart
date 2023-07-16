@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:powervortex/global.dart';
 import 'package:powervortex/database/collections.dart';
 import '../obj/objects.dart';
+import 'dart:async';
 
 class RoomPage extends StatefulWidget {
   final Room room;
@@ -13,12 +14,49 @@ class RoomPage extends StatefulWidget {
 //
 
 class _RoomPageState extends State<RoomPage> {
+  Future runTimer() async {
+    Timer.periodic(Duration(seconds: 1), (timer) async {
+      if (userdetails.homes.length > 0) {
+        for (HomeDetails home in userdetails.homes) {
+          for (Device device in home.activeDevices) {
+            if (device.status) {
+              device.consumption += 0.1;
+              home.totalconsumption += 0.1;
+              await changeConsumption(device);
+            }
+          }
+        }
+      }
+      setState(() {});
+    });
+  }
+
   TextEditingController _devicename = TextEditingController();
   late DeviceType _deviceType;
   String devicename = 'Select type';
   String deviceIndex = '0';
   Room room;
   _RoomPageState(this.room);
+  void timedChecker() {
+    var c = 0.0;
+    Timer.periodic(Duration(seconds: 5), (timer) {
+      if (c != userdetails.homes[0].totalconsumption && mounted)
+        setState(() {});
+      c = userdetails.homes[0].totalconsumption;
+      if (!mounted) timer.cancel();
+      //print(c);
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    // getDevices(room).then((value) => setState(() {}));
+    //runTimer();
+    timedChecker();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -292,10 +330,7 @@ class _RoomPageState extends State<RoomPage> {
                                               padding: EdgeInsets.only(
                                                   left: 20, right: 20),
                                               child: Text(
-                                                  room.boards[0].devices[index]
-                                                      .type
-                                                      .toString()
-                                                      .replaceAll('.', ' : '),
+                                                  'Consumption : ${room.boards[0].devices[index].consumption} W',
                                                   style: TextStyle(
                                                     color: uic.textcolor,
                                                     fontSize: 14,
@@ -329,8 +364,8 @@ class _RoomPageState extends State<RoomPage> {
                                             ),
                                             onTap: () {
                                               setState(() {
-                                               // print(room.boards[0]
-                                                 //   .devices[index].status);
+                                                // print(room.boards[0]
+                                                //   .devices[index].status);
                                                 room.boards[0].devices[index]
                                                         .status =
                                                     !room.boards[0]

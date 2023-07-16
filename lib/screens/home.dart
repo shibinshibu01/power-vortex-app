@@ -211,7 +211,7 @@ class _HomeState extends State<Home> {
                             //padding: EdgeInsets.all(8),
                             child: GestureDetector(
                               onTap: () {
-                                print('tap');
+                                //print('tap');
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -234,9 +234,8 @@ class _HomeState extends State<Home> {
                                         height: 140,
                                         child: Text(
                                           rooms[index]
-                                              .type
-                                              .toString()
-                                              .split('.')[1],
+                                              
+                                              .name,
                                           style: TextStyle(
                                             color: uic.textcolor,
                                             fontSize: 18,

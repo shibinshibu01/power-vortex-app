@@ -7,3 +7,4 @@ import 'obj/ui.dart';
 late User? currentuser;
 late UIComponents uic;
 late UserDetails userdetails;
+int dayindex = 0;

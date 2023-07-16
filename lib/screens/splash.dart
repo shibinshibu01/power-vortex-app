@@ -41,6 +41,7 @@ class _SplashState extends State<Splash> {
     });
     uic = ui;
       await Future.delayed(Duration(seconds: 3));
+      listenForConsumptionChanges();
     if (auth.currentUser != null) {
       return Future.value(new Body());
     }

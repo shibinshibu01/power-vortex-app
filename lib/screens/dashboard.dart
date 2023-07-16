@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../obj/ui.dart';
 import '../global.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'dart:async';
+import '../obj/objects.dart';
+import '../database/collections.dart';
 
 class DashBoard extends StatefulWidget {
   UIComponents ui;
@@ -12,25 +15,61 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
+  Future runTimer() async {
+    Timer.periodic(Duration(seconds: 5), (timer) async {
+      //await getHomeDetails(0);
+      setState(() {});
+    });
+  }
+
+  void timedChecker() {
+    var c = 0.0;
+    Timer.periodic(Duration(seconds: 5), (timer) {
+      if (c != userdetails.homes[0].totalconsumption && mounted)
+        setState(() {});
+      c = userdetails.homes[0].totalconsumption;
+      if (!mounted) timer.cancel();
+      // print(c);
+    });
+  }
+
+  @override
+  void initState() {
+    timedChecker();
+    //temp.sort();
+    temp.addAll(userdetails.homes[0].consumptionHistory);
+    temp.sort();
+    maxval = ((double.parse(temp.last.toString()) ~/ 100) + 1) * 100;
+    print(maxval);
+    super.initState();
+
+    //runTimer();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   List<BarChartGroupData> _chartGroups() {
-    return [
-      BarChartGroupData(x: 0, barRods: [
-        BarChartRodData(
-          toY: 100,
-          width: 20,
-        )
-      ]),
-      BarChartGroupData(x: 1, barRods: [BarChartRodData(toY: 120, width: 20)]),
-      BarChartGroupData(x: 2, barRods: [BarChartRodData(toY: 80, width: 20)]),
-      BarChartGroupData(x: 3, barRods: [BarChartRodData(toY: 150, width: 20)]),
-      BarChartGroupData(x: 4, barRods: [BarChartRodData(toY: 86, width: 20)]),
-      BarChartGroupData(x: 5, barRods: [BarChartRodData(toY: 102, width: 20)]),
-      BarChartGroupData(x: 6, barRods: [BarChartRodData(toY: 132, width: 20)])
-    ];
+    return List.generate(
+        7,
+        (index) => BarChartGroupData(x: index, barRods: [
+              BarChartRodData(
+                color: ui.yellow,
+                toY: userdetails.homes[0].consumptionHistory[index] * 1.0,
+                width: 40,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30)),
+              )
+            ]));
   }
 
   UIComponents ui = UIComponents();
   _DashBoardState(this.ui);
+  double maxval = 100;
+  List temp = [];
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -71,7 +110,7 @@ class _DashBoardState extends State<DashBoard> {
             child: //create a barchart using the fl_chart package
                 BarChart(
               BarChartData(
-                maxY: 200,
+                maxY: maxval,
                 minY: 0,
                 barTouchData: BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
@@ -90,13 +129,16 @@ class _DashBoardState extends State<DashBoard> {
                     border: Border(
                         bottom: BorderSide(color: ui.textcolor, width: 2),
                         left: BorderSide(color: ui.textcolor, width: 2))),
-                gridData: FlGridData(show: false),
+                gridData: FlGridData(
+                    show: true,
+                    drawHorizontalLine: true,
+                    drawVerticalLine: false),
                 titlesData: FlTitlesData(
                   bottomTitles: AxisTitles(sideTitles: _bottomTitles),
                   leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                     showTitles: true,
-                    interval: 50,
+                    interval: maxval / 5,
                     reservedSize: 40,
                     getTitlesWidget: (value, meta) {
                       return Text(value.toInt().toString(),

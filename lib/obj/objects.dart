@@ -107,9 +107,11 @@ class HomeDetails {
   double totalconsumption = 0;
   List<Room> rooms;
   List<UserDetails> users;
+  List consumptionHistory = [0,0,0,0,0,0,0];
   List<Device> activeDevices = [];
   HomeDetails(
-      {required this.name,
+      {this.consumptionHistory = const [0,0,0,0,0,0,0],
+      required this.name,
       required this.hid,
       required this.rooms,
       required this.users});
