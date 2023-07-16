@@ -22,7 +22,9 @@ class _HomeState extends State<Home> {
       activeDevices = currentHome!.activeDevices;
     } else {
       rooms = userdetails.homes.isEmpty ? [] : userdetails.homes[0].rooms;
-      activeDevices = [];
+      activeDevices = userdetails.homes.isEmpty
+          ? []
+          : userdetails.homes[0].activeDevices;
     }
   }
 

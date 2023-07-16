@@ -128,6 +128,7 @@ Future getHomeDetails(index) async {
             }
           });
         }
+        print(userdetails.homes[index].rooms.first.boards.first.devices);
       });
     } else
       print('exist');
@@ -160,4 +161,9 @@ Future changeStatus(Device device) async {
       .child(device.index.toString())
       .child('status')
       .set(device.status);
+}
+
+//fn to run a timer even when the app is closed
+Future<void> runTimer() async {
+  
 }

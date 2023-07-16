@@ -37,7 +37,7 @@ class _SplashState extends State<Splash> {
         email: user.email!,
         uid: user.uid,
       );
-       await getHomeDetails(0).then((value) => null);
+       await getHomeDetails(0);
     });
     uic = ui;
       await Future.delayed(Duration(seconds: 3));

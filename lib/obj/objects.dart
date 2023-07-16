@@ -56,8 +56,7 @@ class Device {
       required this.status,
       required this.consumption,
       required this.index,
-      required this.bid
-      });
+      required this.bid});
   double getConsumption() {
     return consumption;
   }
@@ -105,6 +104,7 @@ class Room {
 class HomeDetails {
   String hid;
   String name;
+  double totalconsumption = 0;
   List<Room> rooms;
   List<UserDetails> users;
   List<Device> activeDevices = [];
