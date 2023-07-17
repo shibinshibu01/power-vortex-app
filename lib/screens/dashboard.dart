@@ -35,12 +35,14 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   void initState() {
-    timedChecker();
-    //temp.sort();
-    temp.addAll(userdetails.homes[0].consumptionHistory);
-    temp.sort();
-    maxval = ((double.parse(temp.last.toString()) ~/ 100) + 1) * 100;
-    print(maxval);
+    if (userdetails.homes.isNotEmpty) {
+      timedChecker();
+      //temp.sort();
+      temp.addAll(userdetails.homes[0].consumptionHistory);
+      temp.sort();
+      maxval = ((double.parse(temp.last.toString()) ~/ 100) + 1) * 100;
+      print(maxval);
+    }
     super.initState();
 
     //runTimer();
@@ -73,7 +75,7 @@ class _DashBoardState extends State<DashBoard> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
+      child:userdetails.homes.isEmpty?Text('no data'): Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
@@ -87,7 +89,7 @@ class _DashBoardState extends State<DashBoard> {
                 )),
           ),
           Container(
-            child: Text('${userdetails.homes[0].totalconsumption} kWh',
+            child: Text('${userdetails.homes[0].totalconsumption} Wh',
                 style: TextStyle(
                   color: ui.yellow,
                   fontSize: 66,
@@ -117,7 +119,7 @@ class _DashBoardState extends State<DashBoard> {
                         tooltipBgColor: ui.primarySwatch,
                         getTooltipItem: (group, groupIndex, rod, rodIndex) {
                           return BarTooltipItem(
-                              rod.toY.toString() + ' kWh',
+                              rod.toY.toString() + ' Wh',
                               TextStyle(
                                 color: ui.textcolor,
                                 fontSize: 18,

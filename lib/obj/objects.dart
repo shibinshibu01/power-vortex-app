@@ -41,6 +41,7 @@ DeviceType getDeviceType(type) {
   return DeviceType.other;
 }
 
+
 class Device {
   String did;
   String name;
@@ -84,7 +85,7 @@ class Room {
       required this.boards,
       required this.type,
       this.lightimage = const AssetImage('assets/room1.png'),
-      this.darkimage = const AssetImage('assets/room1_dark.png'),
+      this.darkimage = const AssetImage('assets/room1_dark .png'),
       required this.name}) {}
   double getRoomConsumption() {
     double consumption = 0;
@@ -107,10 +108,10 @@ class HomeDetails {
   double totalconsumption = 0;
   List<Room> rooms;
   List<UserDetails> users;
-  List consumptionHistory = [0,0,0,0,0,0,0];
+  List consumptionHistory =[0,0,0,0,0,0,0];
   List<Device> activeDevices = [];
   HomeDetails(
-      {this.consumptionHistory = const [0,0,0,0,0,0,0],
+      {
       required this.name,
       required this.hid,
       required this.rooms,

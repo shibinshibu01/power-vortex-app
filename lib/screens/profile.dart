@@ -46,6 +46,7 @@ class _ProfileState extends State<Profile> {
                 setState(() {
                   uic.changeTheme();
                 });
+                getHomeDetails(0);
               },
               icon: Icon(
                   uic.isDark
@@ -422,18 +423,23 @@ class _ProfileState extends State<Profile> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () async {
+                      userdetails.homes.add(HomeDetails(
+                          name: _buildingname.text,
+                          rooms: rooms,
+                          hid: generateID(10),
+                          users: [userdetails]));
+                      await updateUserHomes(HomeDetails(
+                              name: _buildingname.text,
+                              rooms: rooms,
+                              hid: generateID(10),
+                              users: [userdetails]))
+                          .then((value) async{await getHomeDetails(0);});
                       setState(() {
-                        rooms = [];
-                        userdetails.homes.add(HomeDetails(
-                            name: _buildingname.text,
-                            rooms: rooms,
-                            hid: generateID(10),
-                            users: [userdetails]));
                         _buildingname.text = '';
                         _roomname.text = '';
                         _boardid.text = '';
+                        rooms = [];
                       });
-                      await updateUserHomes();
 
                       Navigator.pop(context);
                     },

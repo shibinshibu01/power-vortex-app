@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:powervortex/database/collections.dart';
 import '../obj/ui.dart';
 import '../database/auth.dart';
 import '../global.dart';
@@ -62,12 +63,15 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     }
     await signIn(useremail.text, password.text).then((value) {
       if (value == 'success') {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Sign in successful'),
-          duration: Duration(seconds: 2),
-        ));
-        Navigator.of(context).pop();
-        Navigator.of(context).pushReplacementNamed('/home');
+        
+        Future.delayed(Duration(seconds: 3)).then((value) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Sign in successful'),
+            duration: Duration(seconds: 2),
+          ));
+          Navigator.of(context).pop();
+          Navigator.of(context).pushReplacementNamed('/home');
+        });
       } else if (value.toString() == 'null') {
         print(value);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -141,12 +145,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         .then((value) {
       // value.toString().contains('null');
       if (value == 'success') {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Sign up successful'),
-          duration: Duration(seconds: 2),
-        ));
-        Navigator.of(context).pop();
-        Navigator.of(context).pushReplacementNamed('/home');
+        Future.delayed(Duration(seconds: 3)).then((value) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Sign up successful'),
+            duration: Duration(seconds: 2),
+          ));
+          Navigator.of(context).pop();
+          Navigator.of(context).pushReplacementNamed('/home');
+        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(value.toString()),
@@ -376,7 +382,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         onPressed: () {
                           forgetPassword(useremail.text);
                           //show snackbar please check ur email
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please check your email')));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('please check your email')));
                         },
                         child: Text(
                           'Forgot Password?',

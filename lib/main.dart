@@ -80,14 +80,7 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: _pageIndex == 1
-            ? FloatingActionButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                child: Icon(Icons.add),
-                backgroundColor: uic.secondary,
-                onPressed: () {})
-            : null,
+       
         backgroundColor: uic.background,
         // appBar: AppBar(
         //   backgroundColor: ui.primarySwatch,
@@ -131,7 +124,10 @@ class _BodyState extends State<Body> {
                       backgroundImage: AssetImage('assets/logotransparent.png'),
                     ),
                   ),
-                  slideOption('Settings', Icons.settings, () {}),
+                  //slideOption('Settings', Icons.settings, () {}),
+                  SizedBox(
+                    height: 20,
+                  ),
                   slideOption('About', Icons.info, () {
                     Navigator.push(context,
                             MaterialPageRoute(builder: (context) => About()))

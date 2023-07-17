@@ -5,38 +5,37 @@ import 'dart:async';
 import 'package:powervortex/screens/home.dart';
 import '../obj/objects.dart';
 
-Future updateUserHomes() async {
+Future updateUserHomes(HomeDetails home) async {
   final homeref = await FirebaseDatabase.instance
       .ref()
       .child("users")
       .child(currentuser!.uid)
       .child("homes");
-  for (HomeDetails home in userdetails.homes) {
-    homeref.child(home.hid).set(home.name);
-    List uids = [];
-    List rooms = [];
-    for (UserDetails user in home.users) {
-      uids.add(user.uid);
-    }
-    for (Room room in home.rooms) {
-      rooms.add({
-        'name': room.name,
-        'board': room.boards.first.bid,
-        'roomid': room.rid,
-      });
-    }
-
-    print(rooms);
-    print(uids);
-    final dbRef = await FirebaseDatabase.instance.ref();
-    await dbRef.child('homes').child(home.hid).child("users").set(uids);
-    await dbRef.child('homes').child(home.hid).child("rooms").set(rooms);
-    await dbRef
-        .child('homes')
-        .child(home.hid)
-        .child("consumptionhistory")
-        .set(home.consumptionHistory);
+  print(home.rooms);
+  homeref.child(home.hid).set(home.name);
+  List uids = [];
+  List rooms = [];
+  for (UserDetails user in home.users) {
+    uids.add(user.uid);
   }
+  for (Room room in home.rooms) {
+    rooms.add({
+      'name': room.name,
+      'board': room.boards.first.bid,
+      'roomid': room.rid,
+    });
+  }
+
+  print(rooms);
+  print(uids);
+  final dbRef = await FirebaseDatabase.instance.ref();
+  await dbRef.child('homes').child(home.hid).child("users").set(uids);
+  await dbRef.child('homes').child(home.hid).child("rooms").set(rooms);
+  await dbRef
+      .child('homes')
+      .child(home.hid)
+      .child("consumptionhistory")
+      .set(home.consumptionHistory);
 }
 
 //fn to get the home details of the user
@@ -45,170 +44,179 @@ Future getHomeDetails(index) async {
   final homeidref = await FirebaseDatabase.instance
       .ref()
       .child("users")
-      .child(currentuser!.uid)
-      .child("homes");
-  homeidref.once().then((DatabaseEvent snapshot) async {
-    DataSnapshot values1 = snapshot.snapshot;
-    homeID = values1.children.elementAt(index).key.toString();
-    if (!userdetails.homes.any((element) {
-      print('elemetn : ${element.hid} : $homeID');
-      if (element.hid == homeID) {
-        print('yes');
-        return true;
-      } else
-        return false;
-    })) {
-      //print(homeID);
-      final homeref =
-          await FirebaseDatabase.instance.ref().child("homes").child(homeID);
-      homeref.once().then((DatabaseEvent snapshot) async {
-        DataSnapshot values = snapshot.snapshot;
-        print(List.from(values.child('consumptionhistory').value as Iterable));
-        List chist =
-            List.from(values.child('consumptionhistory').value as List);
-        HomeDetails home = HomeDetails(
-          hid: homeID,
-          name: values1.children.elementAt(index).value.toString(),
-          users: [],
-          rooms: [],
-          consumptionHistory: chist,
-        );
+      .child(currentuser!.uid);
+  bool exist =
+      await homeidref.once().then((value) => value.snapshot.hasChild('homes'));
 
-        home.users.add(userdetails);
-        // print(values.child('rooms'));
-        List rooms = List.from(values.child('rooms').value as Iterable);
-        print(rooms);
-        for (var room in rooms) {
-          Room roomdetails = Room(
-            //lightimage: 'assets/images/light.png',
-            type: RoomType.other,
-            rid: room['roomid'].toString(),
-            name: room['name'].toString(),
-            boards: [
-              Board(
-                bid: room['board'].toString(),
-                devices: [],
-              )
-            ],
+  if (exist) {
+    homeidref.child("homes").once().then((DatabaseEvent snapshot) async {
+      DataSnapshot values1 = snapshot.snapshot;
+      homeID = values1.children.elementAt(index).key.toString();
+      if (!userdetails.homes.any((element) {
+        print('elemetn : ${element.hid} : $homeID');
+        if (element.hid == homeID) {
+          print('yes');
+          return true;
+        } else
+          return false;
+      })) {
+        //print(homeID);
+        final homeref =
+            await FirebaseDatabase.instance.ref().child("homes").child(homeID);
+        homeref.once().then((DatabaseEvent snapshot) async {
+          DataSnapshot values = snapshot.snapshot;
+          print(
+              List.from(values.child('consumptionhistory').value as Iterable));
+          List chist =
+              List.from(values.child('consumptionhistory').value as List);
+          HomeDetails home = HomeDetails(
+            hid: homeID,
+            name: values1.children.elementAt(index).value.toString(),
+            users: [],
+            rooms: [],
+            
           );
+          home.consumptionHistory = chist;
 
-          home.rooms.add(roomdetails);
-        }
-        userdetails.homes.add(home);
-        //updateUserHomes();
+          home.users.add(userdetails);
+          // print(values.child('rooms'));
+          List rooms = List.from(values.child('rooms').value as Iterable);
+          print(rooms);
+          for (var room in rooms) {
+            Room roomdetails = Room(
+              //lightimage: 'assets/images/light.png',
+              type: RoomType.other,
+              rid: room['roomid'].toString(),
+              name: room['name'].toString(),
+              boards: [
+                Board(
+                  bid: room['board'].toString(),
+                  devices: [],
+                )
+              ],
+            );
+
+            home.rooms.add(roomdetails);
+          }
+          userdetails.homes.add(home);
+          //updateUserHomes();
 // print(userdetails.homes[index].rooms);
-        final dbRef = await FirebaseDatabase.instance.ref();
+          final dbRef = await FirebaseDatabase.instance.ref();
 
-        for (Room room in userdetails.homes[index].rooms) {
-          await dbRef.child('boards').once().then((value) async {
-            if (value.snapshot.hasChild(room.boards.first.bid)) {
-              //print(room.boards.first.bid);
-              await dbRef
-                  .child('boards')
-                  .child(room.boards.first.bid)
-                  .once()
-                  .then((value) {
-                DataSnapshot values = value.snapshot;
-                List _devices = [];
-                for (int i = 1; i <= 5; i++) {
-                  if (values.hasChild(i.toString())) {
-                    // print(values.child('$i').value);
-                    _devices.add(values.child('$i').value);
-                    var d = _devices[i - 1];
-                    print(DateTime.now().day);
-                    // print(d);
+          for (Room room in userdetails.homes[index].rooms) {
+            await dbRef.child('boards').once().then((value) async {
+              if (value.snapshot.hasChild(room.boards.first.bid)) {
+                //print(room.boards.first.bid);
+                await dbRef
+                    .child('boards')
+                    .child(room.boards.first.bid)
+                    .once()
+                    .then((value) {
+                  DataSnapshot values = value.snapshot;
+                  List _devices = [];
+                  for (int i = 1; i <= 5; i++) {
+                    if (values.hasChild(i.toString())) {
+                      // print(values.child('$i').value);
+                      _devices.add(values.child('$i').value);
+                      var d = _devices[i - 1];
+                      print(DateTime.now().day);
+                      // print(d);
 
-                    Device devicedetails = Device(
-                      index: i,
-                      bid: room.boards.first.bid,
-                      consumption: double.parse(d['consumption'].toString()),
-                      did: d['did'].toString(),
-                      name: d['name'].toString(),
-                      type: getDeviceType(d['type']),
-                      status: d['status'],
-                    );
-                    userdetails.homes[index].totalconsumption +=
-                        devicedetails.getConsumption();
-                    // print(devicedetails.consumption);
-                    room.boards.first.devices.add(devicedetails);
-                    if (devicedetails.status)
-                      userdetails.homes[index].activeDevices.add(devicedetails);
+                      Device devicedetails = Device(
+                        index: i,
+                        bid: room.boards.first.bid,
+                        consumption: double.parse(d['consumption'].toString()),
+                        did: d['did'].toString(),
+                        name: d['name'].toString(),
+                        type: getDeviceType(d['type']),
+                        status: d['status'],
+                      );
+                      userdetails.homes[index].totalconsumption +=
+                          devicedetails.getConsumption();
+                      // print(devicedetails.consumption);
+                      room.boards.first.devices.add(devicedetails);
+                      if (devicedetails.status)
+                        userdetails.homes[index].activeDevices
+                            .add(devicedetails);
+                    }
                   }
-                }
-              });
-            }
-          });
-        }
-        double sumofallotherdays = 0;
-        for (int i = 0; i < 7; i++) {
-          if (DateTime.now().weekday % 7 != i)
-            sumofallotherdays += userdetails.homes[0].consumptionHistory[i];
-        }
+                });
+              }
+            });
+          }
+          double sumofallotherdays = 0;
+          for (int i = 0; i < 7; i++) {
+            if (DateTime.now().weekday % 7 != i)
+              sumofallotherdays += userdetails.homes[0].consumptionHistory[i];
+          }
 
-        userdetails.homes[0].consumptionHistory[DateTime.now().weekday % 7] =
-            userdetails.homes[0].totalconsumption - sumofallotherdays;
+          userdetails.homes[0].consumptionHistory[(DateTime.now().weekday % 7)] =
+              userdetails.homes[0].totalconsumption - sumofallotherdays;
 
-        //print(userdetails.homes[0].consumptionHistory[DateTime.now().weekday % 7]);
+          //print(userdetails.homes[0].consumptionHistory[DateTime.now().weekday % 7]);
 
-        //print(userdetails.homes[index].rooms.first.boards.first.devices);
-      });
-    } else
-      print('exist');
-    // print(values);
-  });
-
+          //print(userdetails.homes[index].rooms.first.boards.first.devices);
+        });
+      } else
+        print('exist');
+      // print(values);
+    });
+  }
   //search for homeId in Homes collection and get the details
 }
 
 Future getConsumption() async {
-  double previouscon = userdetails.homes[0].totalconsumption;
-  final dbRef = await FirebaseDatabase.instance.ref();
-  for (Room room in userdetails.homes[0].rooms) {
-    await dbRef.child('boards').once().then((value) async {
-      if (value.snapshot.hasChild(room.boards.first.bid)) {
-        //print(room.boards.first.bid);
-        await dbRef
-            .child('boards')
-            .child(room.boards.first.bid)
-            .once()
-            .then((value) {
-          DataSnapshot values = value.snapshot;
-          List devices = [];
-          userdetails.homes[0].totalconsumption = 0.0;
-          for (int i = 1; values.hasChild(i.toString()); i++) {
-            // print(values.child('$i').value);
-            devices.add(values.child('$i').value);
+  if (userdetails.homes.length != 0) {
+    double previouscon = userdetails.homes[0].totalconsumption;
+    final dbRef = await FirebaseDatabase.instance.ref();
+    for (Room room in userdetails.homes[0].rooms) {
+      await dbRef.child('boards').once().then((value) async {
+        if (value.snapshot.hasChild(room.boards.first.bid)) {
+          //print(room.boards.first.bid);
+          await dbRef
+              .child('boards')
+              .child(room.boards.first.bid)
+              .once()
+              .then((value) {
+            DataSnapshot values = value.snapshot;
+            List devices = [];
+            userdetails.homes[0].totalconsumption = 0.0;
+            for (int i = 1; values.hasChild(i.toString()); i++) {
+              // print(values.child('$i').value);
+              devices.add(values.child('$i').value);
 
-            //  print(DateTime.now().day);
-            // print(d);
-          }
-          userdetails.homes[0].rooms.forEach((element) {
-            element.boards.first.devices.forEach((device) {
-              for (int i = 0; i < devices.length; i++) {
-                if (device.did == devices[i]['did']) {
-                  device.consumption =
-                      double.parse(devices[i]['consumption'].toString());
-                  print(devices[i]['consumption']);
+              //  print(DateTime.now().day);
+              // print(d);
+            }
+            userdetails.homes[0].rooms.forEach((element) {
+              element.boards.first.devices.forEach((device) {
+                for (int i = 0; i < devices.length; i++) {
+                  if (device.did == devices[i]['did']) {
+                    device.consumption =
+                        double.parse(devices[i]['consumption'].toString());
+                    print(devices[i]['consumption']);
+                  }
                 }
-              }
-              userdetails.homes[0].totalconsumption += device.getConsumption();
+                userdetails.homes[0].totalconsumption +=
+                    device.getConsumption();
 
-              // double sumofotherdays
+                // double sumofotherdays
+              });
             });
           });
-        });
-      }
-    });
+        }
+      });
+    }
+    userdetails.homes[0].consumptionHistory[DateTime.now().weekday % 7] +=
+        userdetails.homes[0].totalconsumption - previouscon;
+    print(userdetails.homes[0].consumptionHistory);
+    dbRef
+        .child('homes')
+        .child(userdetails.homes[0].hid)
+        .child('consumptionhistory')
+        .set(userdetails.homes[0].consumptionHistory);
+    // print(DateTime.now().weekday%7 );
   }
-  userdetails.homes[0].consumptionHistory[DateTime.now().weekday % 7] +=
-      userdetails.homes[0].totalconsumption - previouscon;
-  print(userdetails.homes[0].consumptionHistory);
-  dbRef
-      .child('homes')
-      .child(userdetails.homes[0].hid)
-      .child('consumptionhistory')
-      .set(userdetails.homes[0].consumptionHistory);
-  // print(DateTime.now().weekday%7 );
 }
 
 //fn to set device details inside the board

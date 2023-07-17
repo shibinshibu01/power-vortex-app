@@ -37,12 +37,13 @@ class _SplashState extends State<Splash> {
         email: user.email!,
         uid: user.uid,
       );
-       await getHomeDetails(0);
+      
     });
     uic = ui;
       await Future.delayed(Duration(seconds: 3));
       listenForConsumptionChanges();
     if (auth.currentUser != null) {
+       await getHomeDetails(0);
       return Future.value(new Body());
     }
     return Future.value(new Login(ui: ui));

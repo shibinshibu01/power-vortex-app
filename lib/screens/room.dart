@@ -150,7 +150,7 @@ class _RoomPageState extends State<RoomPage> {
                                           .replaceAll('.', ' : ');
                                     });
                                   },
-                                  items: [
+                                  items: const[
                                     DropdownMenuItem(
                                       child: Text("Light"),
                                       value: DeviceType.light,
@@ -330,7 +330,7 @@ class _RoomPageState extends State<RoomPage> {
                                               padding: EdgeInsets.only(
                                                   left: 20, right: 20),
                                               child: Text(
-                                                  'Consumption : ${room.boards[0].devices[index].consumption} W',
+                                                  'Consumption : ${room.boards[0].devices[index].consumption} Wh',
                                                   style: TextStyle(
                                                     color: uic.textcolor,
                                                     fontSize: 14,

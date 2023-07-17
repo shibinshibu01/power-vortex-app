@@ -31,7 +31,7 @@ class _HomeState extends State<Home> {
   _HomeState() {}
 
   HomeDetails? currentHome = null;
-  List<Device> activeDevices =
+  List<Device> activeDevices =userdetails.homes.isEmpty?[]:
        userdetails.homes[0].activeDevices;
   List<Room> rooms = [];
   List<AssetImage> lightimages = [
@@ -177,7 +177,7 @@ class _HomeState extends State<Home> {
           SizedBox(height: 10),
           Container(
             padding: EdgeInsets.all(8),
-            child: (rooms.isEmpty)
+            child: (userdetails.homes.isEmpty || rooms.isEmpty)
                 ? Center(
                     child: Text(
                     'no rooms found. kindly setup your home',
