@@ -20,10 +20,10 @@ The future scope of the Power Vortex project includes the following enhancements
 
 ## Contributions
 
--A
--A
--G
--S
+- [Adithya Anil](https://github.com/unidreamerzz007)
+- [Ashwin A](https://github.com/Ashwin-Achu)
+- [Gopal S](https://github.com/gopalshibu142)
+- [Shibin Shibu](https://github.com/shibinshibu01)
 
 ## License
 
