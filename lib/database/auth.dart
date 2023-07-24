@@ -1,8 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:powervortex/database/collections.dart';
 import 'package:powervortex/obj/objects.dart';
 import '../global.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 Future signIn(String email, String password) async {
   try {
@@ -14,6 +17,13 @@ Future signIn(String email, String password) async {
         name: currentuser!.displayName ?? '',
         email: email);
     await getHomeDetails(0);
+    image = Image.network(
+      currentuser!.photoURL!,
+      fit: BoxFit.cover,
+      height: 150,
+      width: 150,
+    );
+    
     return 'success';
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
@@ -62,5 +72,26 @@ Future signOut() async {
     return 'success';
   } catch (e) {
     return e.toString();
+  }
+}
+
+Future updateProfilePic(String path) async {
+  try {
+    // Create a unique filename for the image using the current timestamp
+
+    // Reference to the Firebase Storage bucket and child path
+    final Reference ref =
+        FirebaseStorage.instance.ref().child('profilepics/${currentuser!.uid}');
+
+    // Upload the file to Firebase Storage
+    await ref.putFile(File(path));
+
+    // Get the download URL of the uploaded image
+    String downloadURL = await ref.getDownloadURL();
+    await currentuser!.updatePhotoURL(downloadURL);
+    await currentuser!.reload();
+    print('Image uploaded. Download URL: $downloadURL');
+  } catch (e) {
+    print('Error uploading image: $e');
   }
 }

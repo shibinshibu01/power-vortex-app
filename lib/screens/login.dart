@@ -259,97 +259,75 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         ));
   }
 
-  StatefulBuilder signInSheeet() {
-    return StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-      return Container(
-        height: 500,
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          backgroundColor: Colors.transparent,
-          body: Container(
-            //alignment: Alignment.center,
-            decoration: BoxDecoration(
-                color: uic.primarySwatch,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20))),
-
-            padding: EdgeInsets.all(50),
-            child: ListView(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
+  WillPopScope signInSheeet() {
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+        return Container(
+          height: 500,
+          child: Scaffold(
+            resizeToAvoidBottomInset: true,
+            backgroundColor: Colors.transparent,
+            body: Container(
+              //alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: uic.primarySwatch,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20))),
+    
+              padding: EdgeInsets.all(50),
+              child: ListView(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        style: TextStyle(
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                            color: uic.textcolor),
+                        'Sign in',
+                        textAlign: TextAlign.center,
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              uic.changeTheme();
+                            });
+                          },
+                          icon: Icon(
+                            uic.isDark ? Icons.wb_sunny : Icons.nightlight_round,
+                            color: uic.textcolor,
+                          ))
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text('New User? ',
+                          style: TextStyle(fontSize: 14, color: uic.textcolor)),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            _showSignUp();
+                          },
+                          child: Text(
+                            'Create an account',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xffE1BA48)),
+                          ))
+                    ],
+                  ),
+                  TextField(
+                      cursorColor: Color(0xffE1BA48),
                       style: TextStyle(
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold,
-                          color: uic.textcolor),
-                      'Sign in',
-                      textAlign: TextAlign.center,
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          setState(() {
-                            uic.changeTheme();
-                          });
-                        },
-                        icon: Icon(
-                          uic.isDark ? Icons.wb_sunny : Icons.nightlight_round,
-                          color: uic.textcolor,
-                        ))
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('New User? ',
-                        style: TextStyle(fontSize: 14, color: uic.textcolor)),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          _showSignUp();
-                        },
-                        child: Text(
-                          'Create an account',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xffE1BA48)),
-                        ))
-                  ],
-                ),
-                TextField(
-                    cursorColor: Color(0xffE1BA48),
-                    style: TextStyle(
-                      color: uic.textcolor,
-                    ),
-                    controller: useremail,
-                    decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: uic.textcolor,
-                        ),
+                        color: uic.textcolor,
                       ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0xffE1BA48),
-                        ),
-                      ),
-                      hintText: 'Email address ',
-                      hintStyle: TextStyle(color: uic.textcolor),
-                    )),
-                SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                    obscureText: _obscureText,
-                    cursorColor: Color(0xffE1BA48),
-                    style: TextStyle(
-                      color: uic.textcolor,
-                    ),
-                    controller: password,
-                    decoration: InputDecoration(
+                      controller: useremail,
+                      decoration: InputDecoration(
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: uic.textcolor,
@@ -360,252 +338,284 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             color: Color(0xffE1BA48),
                           ),
                         ),
-                        hintText: 'password ',
+                        hintText: 'Email address ',
                         hintStyle: TextStyle(color: uic.textcolor),
-                        suffix: IconButton(
+                      )),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                      obscureText: _obscureText,
+                      cursorColor: Color(0xffE1BA48),
+                      style: TextStyle(
+                        color: uic.textcolor,
+                      ),
+                      controller: password,
+                      decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: uic.textcolor,
+                            ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color(0xffE1BA48),
+                            ),
+                          ),
+                          hintText: 'password ',
+                          hintStyle: TextStyle(color: uic.textcolor),
+                          suffix: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                            icon: _obscureText
+                                ? Icon(Icons.visibility_off)
+                                : Icon(Icons.visibility),
+                          ))),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            forgetPassword(useremail.text);
+                            //show snackbar please check ur email
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('please check your email')));
+                          },
+                          child: Text(
+                            'Forgot Password?',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xffE1BA48)),
+                          )),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Color(0xffE1BA48),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                          ),
+                          onPressed: () {
+                            startSignIn();
+                          },
+                          child: Text(
+                            'Continue',
+                            style: TextStyle(color: uic.textcolor),
+                          ))
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  WillPopScope signUpSheet() {
+    return WillPopScope(
+      onWillPop: () async{
+        Navigator.pop(context);
+        _showSignIn();
+        return false;
+      },
+      child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+        return Container(
+          height: 700,
+          child: Scaffold(
+            resizeToAvoidBottomInset: true,
+            backgroundColor: Colors.transparent,
+            body: Container(
+              //alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: uic.primarySwatch,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20))),
+    
+              padding: EdgeInsets.all(50),
+              child: ListView(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        style: TextStyle(
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                            color: uic.textcolor),
+                        'Sign up',
+                        textAlign: TextAlign.center,
+                      ),
+                      IconButton(
                           onPressed: () {
                             setState(() {
-                              _obscureText = !_obscureText;
+                              uic.changeTheme();
                             });
                           },
-                          icon: _obscureText
-                              ? Icon(Icons.visibility_off)
-                              : Icon(Icons.visibility),
-                        ))),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                        onPressed: () {
-                          forgetPassword(useremail.text);
-                          //show snackbar please check ur email
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('please check your email')));
-                        },
-                        child: Text(
-                          'Forgot Password?',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xffE1BA48)),
-                        )),
-                    ElevatedButton(
+                          icon: Icon(
+                            uic.isDark ? Icons.wb_sunny : Icons.nightlight_round,
+                            color: uic.textcolor,
+                          ))
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text('Existing user? ',
+                          style: TextStyle(fontSize: 14, color: uic.textcolor)),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            _showSignIn();
+                          },
+                          child: Text(
+                            'Sign in to your account',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xffE1BA48)),
+                          ))
+                    ],
+                  ),
+                  TextField(
+                      cursorColor: Color(0xffE1BA48),
+                      style: TextStyle(
+                        color: uic.textcolor,
+                      ),
+                      controller: name,
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: uic.textcolor,
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffE1BA48),
+                          ),
+                        ),
+                        hintText: 'Name ',
+                        hintStyle: TextStyle(color: uic.textcolor),
+                      )),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                      cursorColor: Color(0xffE1BA48),
+                      style: TextStyle(
+                        color: uic.textcolor,
+                      ),
+                      controller: emailsignup,
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: uic.textcolor,
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffE1BA48),
+                          ),
+                        ),
+                        hintText: 'Email address ',
+                        hintStyle: TextStyle(color: uic.textcolor),
+                      )),
+                  TextField(
+                      obscureText: _obscureText,
+                      cursorColor: Color(0xffE1BA48),
+                      style: TextStyle(
+                        color: uic.textcolor,
+                      ),
+                      controller: passwordsignup,
+                      decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: uic.textcolor,
+                            ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color(0xffE1BA48),
+                            ),
+                          ),
+                          hintText: 'password ',
+                          hintStyle: TextStyle(color: uic.textcolor),
+                          suffix: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _obscureText = !_obscureText;
+                                });
+                              },
+                              icon: Icon(
+                                _obscureText
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                color: Color(0xffE1BA48),
+                              )))),
+                  TextField(
+                      obscureText: _obscureText2,
+                      cursorColor: Color(0xffE1BA48),
+                      style: TextStyle(
+                        color: uic.textcolor,
+                      ),
+                      controller: confirmpassword,
+                      decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: uic.textcolor,
+                            ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color(0xffE1BA48),
+                            ),
+                          ),
+                          hintText: 'confirm password ',
+                          hintStyle: TextStyle(color: uic.textcolor),
+                          suffix: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _obscureText2 = !_obscureText2;
+                                });
+                              },
+                              icon: Icon(
+                                _obscureText2
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                color: Color(0xffE1BA48),
+                              )))),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           primary: Color(0xffE1BA48),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
                         ),
                         onPressed: () {
-                          startSignIn();
+                          startSignUp();
                         },
                         child: Text(
                           'Continue',
                           style: TextStyle(color: uic.textcolor),
-                        ))
-                  ],
-                )
-              ],
+                        )),
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    });
-  }
-
-  StatefulBuilder signUpSheet() {
-    return StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-      return Container(
-        height: 700,
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          backgroundColor: Colors.transparent,
-          body: Container(
-            //alignment: Alignment.center,
-            decoration: BoxDecoration(
-                color: uic.primarySwatch,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20))),
-
-            padding: EdgeInsets.all(50),
-            child: ListView(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      style: TextStyle(
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold,
-                          color: uic.textcolor),
-                      'Sign up',
-                      textAlign: TextAlign.center,
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          setState(() {
-                            uic.changeTheme();
-                          });
-                        },
-                        icon: Icon(
-                          uic.isDark ? Icons.wb_sunny : Icons.nightlight_round,
-                          color: uic.textcolor,
-                        ))
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('Existing user? ',
-                        style: TextStyle(fontSize: 14, color: uic.textcolor)),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          _showSignIn();
-                        },
-                        child: Text(
-                          'Sign in to your account',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xffE1BA48)),
-                        ))
-                  ],
-                ),
-                TextField(
-                    cursorColor: Color(0xffE1BA48),
-                    style: TextStyle(
-                      color: uic.textcolor,
-                    ),
-                    controller: name,
-                    decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: uic.textcolor,
-                        ),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0xffE1BA48),
-                        ),
-                      ),
-                      hintText: 'Name ',
-                      hintStyle: TextStyle(color: uic.textcolor),
-                    )),
-                SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                    cursorColor: Color(0xffE1BA48),
-                    style: TextStyle(
-                      color: uic.textcolor,
-                    ),
-                    controller: emailsignup,
-                    decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: uic.textcolor,
-                        ),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0xffE1BA48),
-                        ),
-                      ),
-                      hintText: 'Email address ',
-                      hintStyle: TextStyle(color: uic.textcolor),
-                    )),
-                TextField(
-                    obscureText: _obscureText,
-                    cursorColor: Color(0xffE1BA48),
-                    style: TextStyle(
-                      color: uic.textcolor,
-                    ),
-                    controller: passwordsignup,
-                    decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: uic.textcolor,
-                          ),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xffE1BA48),
-                          ),
-                        ),
-                        hintText: 'password ',
-                        hintStyle: TextStyle(color: uic.textcolor),
-                        suffix: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
-                            icon: Icon(
-                              _obscureText
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              color: Color(0xffE1BA48),
-                            )))),
-                TextField(
-                    obscureText: _obscureText2,
-                    cursorColor: Color(0xffE1BA48),
-                    style: TextStyle(
-                      color: uic.textcolor,
-                    ),
-                    controller: confirmpassword,
-                    decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: uic.textcolor,
-                          ),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xffE1BA48),
-                          ),
-                        ),
-                        hintText: 'confirm password ',
-                        hintStyle: TextStyle(color: uic.textcolor),
-                        suffix: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _obscureText2 = !_obscureText2;
-                              });
-                            },
-                            icon: Icon(
-                              _obscureText2
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              color: Color(0xffE1BA48),
-                            )))),
-                SizedBox(
-                  height: 20,
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Color(0xffE1BA48),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                      ),
-                      onPressed: () {
-                        startSignUp();
-                      },
-                      child: Text(
-                        'Continue',
-                        style: TextStyle(color: uic.textcolor),
-                      )),
-                )
-              ],
-            ),
-          ),
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 }

@@ -3,6 +3,8 @@ import 'package:powervortex/obj/objects.dart';
 import '../global.dart';
 import '../database/auth.dart';
 import '../database/collections.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -14,6 +16,31 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   List<Room> rooms = [];
   List<Board> boards = [];
+  XFile? pickedImage;
+
+  Future<void> _pickImage() async {
+    final pickedImageVal =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      pickedImage = pickedImageVal;
+      image = Image.file(
+        File(pickedImage!.path),
+        fit: BoxFit.cover,
+        height: 150,
+        width: 150,
+      );
+    });
+    updateProfilePic(pickedImage!.path).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Profile Picture Updated'),
+          duration: Duration(seconds: 1),
+        ),
+      );
+      
+    });
+  }
 
   TextEditingController _buildingname = TextEditingController();
   TextEditingController _roomname = TextEditingController();
@@ -63,19 +90,26 @@ class _ProfileState extends State<Profile> {
               height: 20,
             ),
             Center(
-              child: CircleAvatar(
-                  backgroundColor: uic.yellow,
-                  minRadius: 75,
-                  maxRadius: 80,
-                  child: CircleAvatar(
-                    radius: 75,
-                    backgroundColor: uic.background,
-                    child: ClipOval(
-                        child: Icon(
-                      Icons.person,
-                      size: 140,
+              child: GestureDetector(
+                onTap: () async {
+                  await _pickImage();
+                },
+                child: CircleAvatar(
+                    backgroundColor: uic.yellow,
+                    minRadius: 75,
+                    maxRadius: 80,
+                    child: CircleAvatar(
+                      radius: 75,
+                      backgroundColor: uic.background,
+                      child: ClipOval(
+                          child: currentuser!.photoURL != null||image!=null
+                              ? image
+                              : Icon(
+                                  Icons.person,
+                                  size: 140,
+                                )),
                     )),
-                  )),
+              ),
             ),
             SizedBox(
               height: 20,
@@ -429,11 +463,12 @@ class _ProfileState extends State<Profile> {
                           hid: generateID(10),
                           users: [userdetails]));
                       await updateUserHomes(HomeDetails(
-                              name: _buildingname.text,
-                              rooms: rooms,
-                              hid: generateID(10),
-                              users: [userdetails]))
-                          .then((value) async{await getHomeDetails(0);});
+                          name: _buildingname.text,
+                          rooms: rooms,
+                          hid: generateID(10),
+                          users: [userdetails])).then((value) async {
+                        await getHomeDetails(0);
+                      });
                       setState(() {
                         _buildingname.text = '';
                         _roomname.text = '';

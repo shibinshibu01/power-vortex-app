@@ -83,11 +83,14 @@ class _HomeState extends State<Home> {
                             padding: const EdgeInsets.only(
                                 left: 15, bottom: 20, top: 10),
                             child: Container(
+                             // duration: Duration(milliseconds: 500),
+                              
                               width: 175,
                               height: 200,
                               alignment: Alignment.center,
                               padding: EdgeInsets.all(10),
                               decoration: BoxDecoration(
+                                
                                 color: uic.primarySwatch,
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
