@@ -61,9 +61,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       Navigator.of(context).pop();
       return;
     }
-    await signIn(useremail.text, password.text).then((value) {
+    await signIn(useremail.text.trim(), password.text.trim()).then((value) {
       if (value == 'success') {
-        
         Future.delayed(Duration(seconds: 3)).then((value) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('Sign in successful'),
@@ -77,6 +76,15 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('user not found'),
           duration: Duration(seconds: 2),
+        ));
+        Navigator.of(context).pop();
+      } else if (value.toString() == 'Email not verified') {
+        print(value);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          animation: AnimationController(vsync: this),
+          content: Text('please verify your email'),
+          action: SnackBarAction(label: 'send verification', onPressed: sentVerification),
+          duration: Duration(seconds: 5),
         ));
         Navigator.of(context).pop();
       } else {
@@ -141,17 +149,23 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       return;
     }
 
-    await signUp(emailsignup.text, passwordsignup.text, name.text)
+    await signUp(emailsignup.text.trim(), passwordsignup.text.trim(),
+            name.text.trim())
         .then((value) {
       // value.toString().contains('null');
       if (value == 'success') {
-        Future.delayed(Duration(seconds: 3)).then((value) {
+        Future.delayed(Duration(seconds: 1)).then((value) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Sign up successful'),
+            content: Text('Verification Email has been sent to your email'),
             duration: Duration(seconds: 2),
           ));
+          emailsignup.clear();
+          passwordsignup.clear();
+          name.clear();
+          confirmpassword.clear();
           Navigator.of(context).pop();
-          Navigator.of(context).pushReplacementNamed('/home');
+          Navigator.of(context).pop();
+          _showSignIn();
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -276,7 +290,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20))),
-    
+
               padding: EdgeInsets.all(50),
               child: ListView(
                 children: [
@@ -298,7 +312,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             });
                           },
                           icon: Icon(
-                            uic.isDark ? Icons.wb_sunny : Icons.nightlight_round,
+                            uic.isDark
+                                ? Icons.wb_sunny
+                                : Icons.nightlight_round,
                             color: uic.textcolor,
                           ))
                     ],
@@ -420,7 +436,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
   WillPopScope signUpSheet() {
     return WillPopScope(
-      onWillPop: () async{
+      onWillPop: () async {
         Navigator.pop(context);
         _showSignIn();
         return false;
@@ -439,7 +455,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20))),
-    
+
               padding: EdgeInsets.all(50),
               child: ListView(
                 children: [
@@ -461,7 +477,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             });
                           },
                           icon: Icon(
-                            uic.isDark ? Icons.wb_sunny : Icons.nightlight_round,
+                            uic.isDark
+                                ? Icons.wb_sunny
+                                : Icons.nightlight_round,
                             color: uic.textcolor,
                           ))
                     ],

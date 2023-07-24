@@ -44,10 +44,12 @@ class _SplashState extends State<Splash> {
     uic = ui;
     await Future.delayed(Duration(seconds: 3));
     listenForConsumptionChanges();
-    if (auth.currentUser != null) {
+    if (auth.currentUser != null&&auth.currentUser!.emailVerified) {
+      if (auth.currentUser!.photoURL == null) {
+        image = Image.asset('assets/user.png');
+      } else
       image = Image.network(auth.currentUser!.photoURL!,fit: BoxFit.cover,height: 150,
                           width: 150,);
-       
       await getHomeDetails(0);
       return Future.value(new Body());
     }

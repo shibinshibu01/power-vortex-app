@@ -11,20 +11,28 @@ Future signIn(String email, String password) async {
   try {
     UserCredential userCredential = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
-    currentuser = userCredential.user;
-    userdetails = UserDetails(
-        uid: currentuser!.uid,
-        name: currentuser!.displayName ?? '',
-        email: email);
-    await getHomeDetails(0);
-    image = Image.network(
-      currentuser!.photoURL!,
-      fit: BoxFit.cover,
-      height: 150,
-      width: 150,
-    );
-    
-    return 'success';
+    if (!userCredential.user!.emailVerified) {
+      return 'Email not verified';
+    } else {
+      currentuser = userCredential.user;
+      userdetails = UserDetails(
+          uid: currentuser!.uid,
+          name: currentuser!.displayName ?? '',
+          email: email);
+      await getHomeDetails(0);
+      if (currentuser!.photoURL == null) {
+        image = Image.asset('assets/user.png');
+      } else {
+        image = Image.network(
+          currentuser!.photoURL!,
+          fit: BoxFit.cover,
+          height: 150,
+          width: 150,
+        );
+      }
+
+      return 'success';
+    }
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
       return 'No user found for that email.';
@@ -64,6 +72,10 @@ Future signUp(String email, String password, String name) async {
 
 Future forgetPassword(String email) async {
   await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+}
+
+Future sentVerification() async {
+  await FirebaseAuth.instance.currentUser!.sendEmailVerification();
 }
 
 Future signOut() async {

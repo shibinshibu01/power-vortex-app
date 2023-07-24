@@ -18,7 +18,7 @@ class ScheduleData {
           time.minute == TimeOfDay.now().minute) {
         device.status = switchval;
         changeStatus(device);
-        showNotification(device.name, room.name, switchval?'on':'off');
+        showNotification(device.name, room.name, switchval ? 'on' : 'off');
 
         timer.cancel();
       }
@@ -51,26 +51,21 @@ class _ScheduleState extends State<Schedule> {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings(
       'logotransparent',
-      
     );
     final DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings();
     final InitializationSettings initializationSettings =
         InitializationSettings(
-
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
-    await notifications.initialize(initializationSettings,
-    onDidReceiveNotificationResponse: (details) {
-      print(details.payload);
-    },
-    
+    await notifications.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (details) {
+        print(details.payload);
+      },
     );
   }
-  
-
- 
 
   @override
   void initState() {
@@ -98,7 +93,6 @@ class _ScheduleState extends State<Schedule> {
           child: Icon(Icons.add),
           backgroundColor: uic.secondary,
           onPressed: () {
-            
             showSheet();
           }),
       backgroundColor: ui.background,
@@ -284,6 +278,9 @@ class _ScheduleState extends State<Schedule> {
                             hint: Text(roomval),
                             value: null,
                             onChanged: (value) {
+                              deviceList = [];
+                              deviceval = 'Device';
+                              switchval = 'Switch';
                               value.boards[0].devices.forEach((element) {
                                 deviceList.add(DropdownMenuItem(
                                     child: Text(element.name), value: element));
@@ -366,7 +363,7 @@ class _ScheduleState extends State<Schedule> {
                           //       'Your Channel Name',
                           //       importance: Importance.max,
                           //     ));
-                          
+
                           //add schedule to list
                           schedules.add(ScheduleData(time, selectedRoom,
                               selectedDevice, selectedSwitch));

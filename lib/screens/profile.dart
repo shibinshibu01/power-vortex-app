@@ -38,7 +38,6 @@ class _ProfileState extends State<Profile> {
           duration: Duration(seconds: 1),
         ),
       );
-      
     });
   }
 
@@ -102,7 +101,7 @@ class _ProfileState extends State<Profile> {
                       radius: 75,
                       backgroundColor: uic.background,
                       child: ClipOval(
-                          child: currentuser!.photoURL != null||image!=null
+                          child: currentuser!.photoURL != null || image != null
                               ? image
                               : Icon(
                                   Icons.person,
@@ -174,7 +173,7 @@ class _ProfileState extends State<Profile> {
                                   ))
                             ],
                           );
-                        }).then((value) => setState(() {}));
+                        });
 
                     //Navigator.pushNamed(context, '/login');
                   },

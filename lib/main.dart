@@ -15,6 +15,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'screens/login.dart';
 import 'screens/profile.dart';
 import 'screens/about.dart';
+import '../database/auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,12 +76,10 @@ class _BodyState extends State<Body> {
 
   PageController _pageController = PageController();
   int _pageIndex = 0;
-  
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       
         backgroundColor: uic.background,
         // appBar: AppBar(
         //   backgroundColor: ui.primarySwatch,
@@ -100,9 +99,7 @@ class _BodyState extends State<Body> {
             slideDirection: SlideDirection.RIGHT_TO_LEFT,
             appBar: SliderAppBar(
                 trailing: GestureDetector(
-                  onTap: () => setState(() {
-                    
-                  }),
+                  onTap: () => setState(() {}),
                   child: Padding(
                     padding: const EdgeInsets.all(1.0),
                     child: Image(image: AssetImage('assets/logotext.png')),
@@ -172,14 +169,49 @@ class _BodyState extends State<Body> {
                   ),
                   ListTile(
                     onTap: () async {
-                      await FirebaseAuth.instance.signOut();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Logged out'),
-                          duration: Duration(seconds: 1),
-                        ),
-                      );
-                      Navigator.pushReplacementNamed(context, '/login');
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: uic.primarySwatch,
+                              title: Text('Alert! you are about to logout',
+                                  style: TextStyle(color: uic.textcolor)),
+                              content: Text('Are you sure you want to log out?',
+                                  style: TextStyle(color: uic.textcolor)),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      'Cancel',
+                                      style: TextStyle(color: uic.yellow),
+                                    )),
+                                TextButton(
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                      await signOut().then((value) {
+                                        if (value == 'success') {
+                                          Navigator.pushReplacementNamed(
+                                              context, '/login');
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(value),
+                                              duration: Duration(seconds: 3),
+                                            ),
+                                          );
+                                        }
+                                      });
+                                    },
+                                    child: Text(
+                                      'Log Out',
+                                      style: TextStyle(color: Colors.red),
+                                    ))
+                              ],
+                            );
+                          });
                     },
                     leading: Icon(
                       Icons.logout,
@@ -253,7 +285,7 @@ class _BodyState extends State<Body> {
       onTap: () async {
         await HapticFeedback.vibrate();
         onTap();
-       // _key.currentState!.closeSlider();
+        // _key.currentState!.closeSlider();
       },
       leading: Icon(
         icon,
