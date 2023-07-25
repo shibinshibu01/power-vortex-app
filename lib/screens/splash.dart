@@ -50,7 +50,8 @@ class _SplashState extends State<Splash> {
       } else
       image = Image.network(auth.currentUser!.photoURL!,fit: BoxFit.cover,height: 150,
                           width: 150,);
-      await getHomeDetails(0);
+      await getAllHomes();
+      await getHomeDetails(homeIndex);
       return Future.value(new Body());
     }
     return Future.value(new Login(ui: ui));

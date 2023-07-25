@@ -5,12 +5,14 @@ import 'database/auth.dart';
 import 'obj/ui.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:image_picker/image_picker.dart';
+
 late User? currentuser;
 late UIComponents uic;
 late UserDetails userdetails;
 int dayindex = 0;
 List schedules = [];
 late Image image;
+int homeIndex = 0;
 late FlutterLocalNotificationsPlugin notifications;
 Future<void> showNotification(devicename, roomname, status) async {
   AndroidNotificationDetails androidPlatformChannelSpecifics =

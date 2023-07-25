@@ -25,9 +25,9 @@ class _DashBoardState extends State<DashBoard> {
   void timedChecker() {
     var c = 0.0;
     Timer.periodic(Duration(seconds: 5), (timer) {
-      if (c != userdetails.homes[0].totalconsumption && mounted)
+      if (c != userdetails.homes[homeIndex].totalconsumption && mounted)
         setState(() {});
-      c = userdetails.homes[0].totalconsumption;
+      c = userdetails.homes[homeIndex].totalconsumption;
       if (!mounted) timer.cancel();
       // print(c);
     });
@@ -38,7 +38,7 @@ class _DashBoardState extends State<DashBoard> {
     if (userdetails.homes.isNotEmpty) {
       timedChecker();
       //temp.sort();
-      temp.addAll(userdetails.homes[0].consumptionHistory);
+      temp.addAll(userdetails.homes[homeIndex].consumptionHistory);
       temp.sort();
       maxval = ((double.parse(temp.last.toString()) ~/ 100) + 1) * 100;
       print(maxval);
@@ -56,10 +56,11 @@ class _DashBoardState extends State<DashBoard> {
   List<BarChartGroupData> _chartGroups() {
     return List.generate(
         7,
-        (index) => BarChartGroupData(x: index, barRods: [
+        (_index) => BarChartGroupData(x: _index, barRods: [
               BarChartRodData(
                 color: ui.yellow,
-                toY: userdetails.homes[0].consumptionHistory[index] * 1.0,
+                toY: userdetails.homes[homeIndex].consumptionHistory[_index] *
+                    1.0,
                 width: 40,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
@@ -75,92 +76,95 @@ class _DashBoardState extends State<DashBoard> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child:userdetails.homes.isEmpty?Text('no data'): Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.fromLTRB(20, 20, 0, 30),
-            alignment: Alignment.centerLeft,
-            child: Text('Power Consumption ',
-                style: TextStyle(
-                  color: ui.textcolor,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                )),
-          ),
-          Container(
-            child: Text('${userdetails.homes[0].totalconsumption} Wh',
-                style: TextStyle(
-                  color: ui.yellow,
-                  fontSize: 66,
-                  fontWeight: FontWeight.bold,
-                )),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20, 20, 0, 30),
-            alignment: Alignment.centerLeft,
-            child: Text('This Week',
-                style: TextStyle(
-                  color: ui.textcolor,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                )),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 30),
-            height: 300,
-            child: //create a barchart using the fl_chart package
-                BarChart(
-              BarChartData(
-                maxY: maxval,
-                minY: 0,
-                barTouchData: BarTouchData(
-                    touchTooltipData: BarTouchTooltipData(
-                        tooltipBgColor: ui.primarySwatch,
-                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                          return BarTooltipItem(
-                              rod.toY.toString() + ' Wh',
-                              TextStyle(
-                                color: ui.textcolor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ));
-                        })),
-                barGroups: _chartGroups(),
-                borderData: FlBorderData(
-                    border: Border(
-                        bottom: BorderSide(color: ui.textcolor, width: 2),
-                        left: BorderSide(color: ui.textcolor, width: 2))),
-                gridData: FlGridData(
-                    show: true,
-                    drawHorizontalLine: true,
-                    drawVerticalLine: false),
-                titlesData: FlTitlesData(
-                  bottomTitles: AxisTitles(sideTitles: _bottomTitles),
-                  leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                    showTitles: true,
-                    interval: maxval / 5,
-                    reservedSize: 40,
-                    getTitlesWidget: (value, meta) {
-                      return Text(value.toInt().toString(),
-                          style: TextStyle(
-                            color: ui.textcolor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ));
-                    },
-                  )),
-                  topTitles:
-                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles:
-                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+      child: userdetails.homes.isEmpty
+          ? Text('no data')
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.fromLTRB(20, 20, 0, 30),
+                  alignment: Alignment.centerLeft,
+                  child: Text('Power Consumption ',
+                      style: TextStyle(
+                        color: ui.textcolor,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      )),
                 ),
-              ),
+                Container(
+                  child: Text('${userdetails.homes[0].totalconsumption} Wh',
+                      style: TextStyle(
+                        color: ui.yellow,
+                        fontSize: 66,
+                        fontWeight: FontWeight.bold,
+                      )),
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(20, 20, 0, 30),
+                  alignment: Alignment.centerLeft,
+                  child: Text('This Week',
+                      style: TextStyle(
+                        color: ui.textcolor,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      )),
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(20, 20, 20, 30),
+                  height: 300,
+                  child: //create a barchart using the fl_chart package
+                      BarChart(
+                    BarChartData(
+                      maxY: maxval,
+                      minY: 0,
+                      barTouchData: BarTouchData(
+                          touchTooltipData: BarTouchTooltipData(
+                              tooltipBgColor: ui.primarySwatch,
+                              getTooltipItem:
+                                  (group, groupIndex, rod, rodIndex) {
+                                return BarTooltipItem(
+                                    rod.toY.toString() + ' Wh',
+                                    TextStyle(
+                                      color: ui.textcolor,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ));
+                              })),
+                      barGroups: _chartGroups(),
+                      borderData: FlBorderData(
+                          border: Border(
+                              bottom: BorderSide(color: ui.textcolor, width: 2),
+                              left: BorderSide(color: ui.textcolor, width: 2))),
+                      gridData: FlGridData(
+                          show: true,
+                          drawHorizontalLine: true,
+                          drawVerticalLine: false),
+                      titlesData: FlTitlesData(
+                        bottomTitles: AxisTitles(sideTitles: _bottomTitles),
+                        leftTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                          showTitles: true,
+                          interval: maxval / 5,
+                          reservedSize: 40,
+                          getTitlesWidget: (value, meta) {
+                            return Text(value.toInt().toString(),
+                                style: TextStyle(
+                                  color: ui.textcolor,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ));
+                          },
+                        )),
+                        topTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false)),
+                        rightTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false)),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 

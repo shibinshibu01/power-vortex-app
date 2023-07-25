@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 
+
+
 Future signIn(String email, String password) async {
   try {
     UserCredential userCredential = await FirebaseAuth.instance
@@ -19,7 +21,7 @@ Future signIn(String email, String password) async {
           uid: currentuser!.uid,
           name: currentuser!.displayName ?? '',
           email: email);
-      await getHomeDetails(0);
+      await getAllHomes();
       if (currentuser!.photoURL == null) {
         image = Image.asset('assets/user.png');
       } else {

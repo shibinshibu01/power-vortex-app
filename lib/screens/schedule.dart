@@ -78,7 +78,7 @@ class _ScheduleState extends State<Schedule> {
     init();
     super.initState();
     if (userdetails.homes.isNotEmpty)
-      userdetails.homes[0].rooms.forEach((element) {
+      userdetails.homes[homeIndex].rooms.forEach((element) {
         roomList
             .add(DropdownMenuItem(child: Text(element.name), value: element));
       });

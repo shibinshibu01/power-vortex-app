@@ -109,16 +109,17 @@ class _BodyState extends State<Body> {
                 appBarColor: uic.background,
                 title: Text('')),
             slider: Container(
+              padding:EdgeInsets.only(top: 20) ,
               alignment: Alignment.center,
               color: uic.primarySwatch,
               child: ListView(
                 children: [
                   CircleAvatar(
                     radius: 80,
-                    backgroundColor: uic.selectioncolor,
+                    backgroundColor: uic.yellow,
                     child: CircleAvatar(
                       radius: 75,
-                      backgroundImage: AssetImage('assets/logotransparent.png'),
+                      backgroundImage:currentuser!.photoURL==null? AssetImage('assets/logotransparent.png'):image.image,
                     ),
                   ),
                   //slideOption('Settings', Icons.settings, () {}),

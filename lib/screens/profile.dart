@@ -72,7 +72,7 @@ class _ProfileState extends State<Profile> {
                 setState(() {
                   uic.changeTheme();
                 });
-                getHomeDetails(0);
+                getHomeDetails(homeIndex);
               },
               icon: Icon(
                   uic.isDark
@@ -251,30 +251,59 @@ class _ProfileState extends State<Profile> {
                               });
                             },
                           )
-                        : Container(
-                            height: 100,
-                            decoration: BoxDecoration(
-                                color: uic.background,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.home,
-                                  color: uic.yellow,
-                                  size: 50,
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  userdetails.homes[index].name,
-                                  style: TextStyle(
-                                      color: uic.textcolor,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
+                        : GestureDetector(
+                            onTap: () async{
+                              homeIndex = index;
+                              await getHomeDetails(homeIndex);
+                              setState(() {
+                              });
+                            },
+                            child: Container(
+                              height: 100,
+                              decoration: BoxDecoration(
+                                  color: uic.background,
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                        left: 10, top: 8, right: 10),
+                                    alignment: Alignment.topLeft,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          userdetails.homes[index].name,
+                                          style: TextStyle(
+                                              color: uic.textcolor,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        if (homeIndex == index)
+                                          Icon(
+                                            Icons.check,
+                                            color: uic.yellow,
+                                            size: 22,
+                                          )
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Image.asset(
+                                    uic.isDark
+                                        ? 'assets/homeDark.png'
+                                        : 'assets/homeLight.png',
+                                    height: 100,
+                                    width: 150,
+                                    fit: BoxFit.cover,
+                                  )
+                                ],
+                              ),
                             ),
                           );
                   }),
@@ -466,7 +495,7 @@ class _ProfileState extends State<Profile> {
                           rooms: rooms,
                           hid: generateID(10),
                           users: [userdetails])).then((value) async {
-                        await getHomeDetails(0);
+                        await getHomeDetails(homeIndex);
                       });
                       setState(() {
                         _buildingname.text = '';
