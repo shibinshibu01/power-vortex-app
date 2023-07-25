@@ -193,16 +193,22 @@ class _ProfileState extends State<Profile> {
                       fontWeight: FontWeight.bold)),
             ),
             SizedBox(height: 20),
-            Padding(
+            Container(
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(
                   shrinkWrap: true,
+                  
                   itemCount: userdetails.homes.length + 1,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      childAspectRatio: 1,
+                      childAspectRatio: .95,
                       crossAxisSpacing: 10,
-                      mainAxisSpacing: 410),
+                      mainAxisSpacing: 410,
+                      mainAxisExtent: 150
+
+                      
+                      ),
+                  scrollDirection: Axis.vertical,
                   itemBuilder: (BuildContext context, int index) {
                     return index == userdetails.homes.length
                         ? GestureDetector(
@@ -210,7 +216,13 @@ class _ProfileState extends State<Profile> {
                               height: 100,
                               decoration: BoxDecoration(
                                   color: uic.background,
-                                  borderRadius: BorderRadius.circular(20)),
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 10,
+                                        spreadRadius: 2)
+                                  ],),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

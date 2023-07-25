@@ -56,14 +56,27 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (notification) {
-        if (notification is ScrollEndNotification) {
+      child: RefreshIndicator(
+        backgroundColor: uic.primarySwatch,
+        color: uic.yellow,
+        
+        onRefresh: () async{
+        
+           if (currentHome != null) {
+      rooms = userdetails.homes[homeIndex].rooms;
+      activeDevices = currentHome!.activeDevices;
+    } else {
+      rooms =
+          userdetails.homes.isEmpty ? [] : userdetails.homes[homeIndex].rooms;
+      activeDevices = userdetails.homes.isEmpty
+          ? []
+          : userdetails.homes[homeIndex].activeDevices;
+    }
               setState(() {
                 
               });
-            }
-            return false;
+           
+           
         },
         child: ListView(
           children: <Widget>[
