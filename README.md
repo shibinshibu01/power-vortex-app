@@ -2,7 +2,7 @@
 
 ![Power Vortex Logo](imageRead/power_vortex_logo.png)
 
-Explore the design and comprehensive presentation by visiting <a href="(https://bit.ly/powervortex)">Click here!<a>.
+Explore the design and comprehensive presentation by visiting <a href="https://bit.ly/powervortex">Click here!<a>.
 
 Power Vortex is an innovative home energy management system that enables users to optimize power consumption and promote sustainable energy practices. With real-time insights, remote control, and centralized data storage, Power Vortex empowers users to efficiently manage their appliances and reduce energy wastage.
 
