@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:powervortex/global.dart';
 import 'package:powervortex/obj/objects.dart';
 import 'dart:async';
+import '../global.dart';
 import 'package:powervortex/screens/home.dart';
 import '../obj/objects.dart';
 
@@ -36,6 +37,19 @@ Future updateUserHomes(HomeDetails home) async {
       .child(home.hid)
       .child("consumptionhistory")
       .set(home.consumptionHistory);
+}
+
+Future getAllHomes() async {
+  userdetails.homes = [];
+  final dbref =
+      FirebaseDatabase.instance.ref().child('users').child(currentuser!.uid);
+  await dbref.once().then((DatabaseEvent event) async {
+    DataSnapshot snap = event.snapshot;
+    userdetails.homes = [];
+    for (var i = 0; i < snap.child('homes').children.length; i++) {
+      await getHomeDetails(i);
+    }
+  });
 }
 
 //fn to get the home details of the user
@@ -74,7 +88,6 @@ Future getHomeDetails(index) async {
             name: values1.children.elementAt(index).value.toString(),
             users: [],
             rooms: [],
-            
           );
           home.consumptionHistory = chist;
 
@@ -147,11 +160,13 @@ Future getHomeDetails(index) async {
           double sumofallotherdays = 0;
           for (int i = 0; i < 7; i++) {
             if (DateTime.now().weekday % 7 != i)
-              sumofallotherdays += userdetails.homes[0].consumptionHistory[i];
+              sumofallotherdays +=
+                  userdetails.homes[index].consumptionHistory[i];
           }
 
-          userdetails.homes[0].consumptionHistory[(DateTime.now().weekday % 7)] =
-              userdetails.homes[0].totalconsumption - sumofallotherdays;
+          userdetails.homes[index]
+                  .consumptionHistory[(DateTime.now().weekday % 7)] =
+              userdetails.homes[index].totalconsumption - sumofallotherdays;
 
           //print(userdetails.homes[0].consumptionHistory[DateTime.now().weekday % 7]);
 
@@ -167,12 +182,13 @@ Future getHomeDetails(index) async {
 
 Future getConsumption() async {
   if (userdetails.homes.length != 0) {
-    double previouscon = userdetails.homes[0].totalconsumption;
+    double previouscon = userdetails.homes[homeIndex].totalconsumption;
     final dbRef = await FirebaseDatabase.instance.ref();
-    for (Room room in userdetails.homes[0].rooms) {
+    for (Room room in userdetails.homes[homeIndex].rooms) {
       await dbRef.child('boards').once().then((value) async {
         if (value.snapshot.hasChild(room.boards.first.bid)) {
           //print(room.boards.first.bid);
+         
           await dbRef
               .child('boards')
               .child(room.boards.first.bid)
@@ -180,7 +196,7 @@ Future getConsumption() async {
               .then((value) {
             DataSnapshot values = value.snapshot;
             List devices = [];
-            userdetails.homes[0].totalconsumption = 0.0;
+            userdetails.homes[homeIndex].totalconsumption = 0.0;
             for (int i = 1; values.hasChild(i.toString()); i++) {
               // print(values.child('$i').value);
               devices.add(values.child('$i').value);
@@ -188,16 +204,21 @@ Future getConsumption() async {
               //  print(DateTime.now().day);
               // print(d);
             }
-            userdetails.homes[0].rooms.forEach((element) {
+            userdetails.homes[homeIndex].rooms.forEach((element) {
               element.boards.first.devices.forEach((device) {
                 for (int i = 0; i < devices.length; i++) {
                   if (device.did == devices[i]['did']) {
+                    device.status = devices[i]['status'];
+                    if (device.status)
+                      userdetails.homes[homeIndex].activeDevices.add(device);
+                    else
+                      userdetails.homes[homeIndex].activeDevices.remove(device);
                     device.consumption =
                         double.parse(devices[i]['consumption'].toString());
-                    print(devices[i]['consumption']);
+                    // print(devices[i]['consumption']);
                   }
                 }
-                userdetails.homes[0].totalconsumption +=
+                userdetails.homes[homeIndex].totalconsumption +=
                     device.getConsumption();
 
                 // double sumofotherdays
@@ -207,14 +228,15 @@ Future getConsumption() async {
         }
       });
     }
-    userdetails.homes[0].consumptionHistory[DateTime.now().weekday % 7] +=
-        userdetails.homes[0].totalconsumption - previouscon;
-    print(userdetails.homes[0].consumptionHistory);
+    userdetails
+            .homes[homeIndex].consumptionHistory[DateTime.now().weekday % 7] +=
+        userdetails.homes[homeIndex].totalconsumption - previouscon;
+    //print(userdetails.homes[homeIndex].consumptionHistory);
     dbRef
         .child('homes')
-        .child(userdetails.homes[0].hid)
+        .child(userdetails.homes[homeIndex].hid)
         .child('consumptionhistory')
-        .set(userdetails.homes[0].consumptionHistory);
+        .set(userdetails.homes[homeIndex].consumptionHistory);
     // print(DateTime.now().weekday%7 );
   }
 }
@@ -312,8 +334,10 @@ Future listenForConsumptionChanges() async {
   final dbRef = await FirebaseDatabase.instance.ref().child('boards');
   //dbRef.once().then((value) => print(value.snapshot.children.length.toString()));
 
-  dbRef.onValue.listen((event) {
-    getConsumption();
+  dbRef.onValue.listen((event) async {
+    print('listened');
+    await getConsumption();
+    //await getStatus();
   });
 
   // var d = event.snapshot.value;

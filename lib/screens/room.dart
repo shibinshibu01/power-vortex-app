@@ -38,11 +38,12 @@ class _RoomPageState extends State<RoomPage> {
   Room room;
   _RoomPageState(this.room);
   void timedChecker() {
+    
     var c = 0.0;
-    Timer.periodic(Duration(seconds: 5), (timer) {
-      if (c != userdetails.homes[0].totalconsumption && mounted)
+    Timer.periodic(Duration(seconds: 2), (timer) {
+      if (mounted)
         setState(() {});
-      c = userdetails.homes[0].totalconsumption;
+      c = userdetails.homes[homeIndex].totalconsumption;
       if (!mounted) timer.cancel();
       //print(c);
     });
@@ -371,21 +372,10 @@ class _RoomPageState extends State<RoomPage> {
                                                     !room.boards[0]
                                                         .devices[index].status;
                                               });
-                                              if (room.boards[0].devices[index]
-                                                  .status) {
-                                                userdetails
-                                                    .homes[0].activeDevices
-                                                    .add(room.boards[0]
-                                                        .devices[index]);
-                                              } else {
-                                                userdetails
-                                                    .homes[0].activeDevices
-                                                    .remove(room.boards[0]
-                                                        .devices[index]);
-                                              }
+                                              
                                               changeStatus(room
                                                   .boards[0].devices[index]);
-                                              print(userdetails.homes[0]
+                                              print(userdetails.homes[homeIndex]
                                                   .activeDevices.length);
                                             },
                                           ),

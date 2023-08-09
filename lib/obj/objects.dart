@@ -3,6 +3,21 @@ import 'dart:math';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:powervortex/global.dart';
+
+//fn to find the room from the device id
+Room getRoomFromDeviceID(String did)  {
+  for (var room in userdetails.homes[homeIndex].rooms) {
+    for (var board in room.boards) {
+      for (var device in board.devices) {
+        if (device.did == did) {
+          return room;
+        }
+      }
+    }
+  }
+  return userdetails.homes[homeIndex].rooms[0];
+}
 
 String generateID(int length) {
   final random = Random();

@@ -5,6 +5,7 @@ import 'package:powervortex/database/collections.dart';
 import '../obj/ui.dart';
 import '../obj/objects.dart';
 import '../global.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class ScheduleData {
   TimeOfDay time;
@@ -17,6 +18,8 @@ class ScheduleData {
           time.minute == TimeOfDay.now().minute) {
         device.status = switchval;
         changeStatus(device);
+        showNotification(device.name, room.name, switchval ? 'on' : 'off');
+
         timer.cancel();
       }
     });
@@ -40,18 +43,45 @@ class _ScheduleState extends State<Schedule> {
   _ScheduleState(this.ui);
   List<DropdownMenuItem> roomList = [];
   List<DropdownMenuItem> deviceList = [];
- 
+
   late Device selectedDevice;
   late Room selectedRoom;
   late bool selectedSwitch;
+  void init() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings(
+      'logotransparent',
+    );
+    final DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings();
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+    await notifications.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (details) {
+        print(details.payload);
+      },
+    );
+  }
 
   @override
   void initState() {
+    notifications = FlutterLocalNotificationsPlugin();
+
+    notifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()!
+        .requestPermission();
+    init();
     super.initState();
-    if(userdetails.homes.isNotEmpty)
-    userdetails.homes[0].rooms.forEach((element) {
-      roomList.add(DropdownMenuItem(child: Text(element.name), value: element));
-    });
+    if (userdetails.homes.isNotEmpty)
+      userdetails.homes[homeIndex].rooms.forEach((element) {
+        roomList
+            .add(DropdownMenuItem(child: Text(element.name), value: element));
+      });
   }
 
   @override
@@ -75,49 +105,48 @@ class _ScheduleState extends State<Schedule> {
                     fontWeight: FontWeight.bold,
                   ))
               : Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(left: 20, top: 20, bottom: 30),
-                    alignment: Alignment.centerLeft,
-                    child: Text("Schedules",
-                        style: TextStyle(
-                          color: uic.textcolor,
-                          fontSize: 38,
-                          fontWeight: FontWeight.bold,
-                        )),
-                  ),
-                  Expanded(
-                    
-                    child: ListView.builder(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(left: 20, top: 20, bottom: 30),
+                      alignment: Alignment.centerLeft,
+                      child: Text("Schedules",
+                          style: TextStyle(
+                            color: uic.textcolor,
+                            fontSize: 38,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
                         itemCount: schedules.length,
                         itemBuilder: (context, index) {
                           return Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16),
-                                color: uic.background
-                                
-                                ),
-                            padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                                color: uic.background),
+                            padding:
+                                EdgeInsets.only(left: 10, right: 10, top: 10),
                             child: Container(
-
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(16),
-                                    color: uic.background
-                                    
-                                    ),
+                                    color: uic.background),
                                 height: 120,
                                 child: Card(
-                                  
                                   color: uic.secondary,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16)),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Container(
-                                        padding: EdgeInsets.only(left: 20, right: 10),
+                                        padding: EdgeInsets.only(
+                                            left: 20, right: 10),
                                         child: Text(
-                                            schedules[index].time.hour.toString() +
+                                            schedules[index]
+                                                    .time
+                                                    .hour
+                                                    .toString() +
                                                 ":" +
                                                 schedules[index]
                                                     .time
@@ -131,7 +160,8 @@ class _ScheduleState extends State<Schedule> {
                                             )),
                                       ),
                                       Container(
-                                        padding: EdgeInsets.only(left: 10, right: 10),
+                                        padding: EdgeInsets.only(
+                                            left: 10, right: 10),
                                         child: Text(schedules[index].room.name,
                                             style: TextStyle(
                                               color: Colors.black,
@@ -140,18 +170,23 @@ class _ScheduleState extends State<Schedule> {
                                             )),
                                       ),
                                       Container(
-                                        padding: EdgeInsets.only(left: 10, right: 10),
-                                        child: Text(schedules[index].device.name,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            )),
+                                        padding: EdgeInsets.only(
+                                            left: 10, right: 10),
+                                        child:
+                                            Text(schedules[index].device.name,
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                )),
                                       ),
                                       Container(
-                                        padding: EdgeInsets.only(left: 20, right: 20),
+                                        padding: EdgeInsets.only(
+                                            left: 20, right: 20),
                                         child: Text(
-                                            schedules[index].switchval ? 'on' : 'off',
+                                            schedules[index].switchval
+                                                ? 'on'
+                                                : 'off',
                                             style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 18,
@@ -164,9 +199,9 @@ class _ScheduleState extends State<Schedule> {
                           );
                         },
                       ),
-                  ),
-                ],
-              )),
+                    ),
+                  ],
+                )),
     );
   }
 
@@ -243,6 +278,9 @@ class _ScheduleState extends State<Schedule> {
                             hint: Text(roomval),
                             value: null,
                             onChanged: (value) {
+                              deviceList = [];
+                              deviceval = 'Device';
+                              switchval = 'Switch';
                               value.boards[0].devices.forEach((element) {
                                 deviceList.add(DropdownMenuItem(
                                     child: Text(element.name), value: element));
@@ -316,6 +354,16 @@ class _ScheduleState extends State<Schedule> {
                           ),
                         ),
                         onPressed: () async {
+                          // await FlutterLocalNotificationsPlugin()
+                          //     .resolvePlatformSpecificImplementation<
+                          //         AndroidFlutterLocalNotificationsPlugin>()
+                          //     ?.createNotificationChannel(
+                          //         const AndroidNotificationChannel(
+                          //       'your_channel_id',
+                          //       'Your Channel Name',
+                          //       importance: Importance.max,
+                          //     ));
+
                           //add schedule to list
                           schedules.add(ScheduleData(time, selectedRoom,
                               selectedDevice, selectedSwitch));

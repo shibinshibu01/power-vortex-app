@@ -3,6 +3,8 @@ import 'package:powervortex/obj/objects.dart';
 import '../global.dart';
 import '../database/auth.dart';
 import '../database/collections.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -14,6 +16,30 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   List<Room> rooms = [];
   List<Board> boards = [];
+  XFile? pickedImage;
+
+  Future<void> _pickImage() async {
+    final pickedImageVal =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      pickedImage = pickedImageVal;
+      image = Image.file(
+        File(pickedImage!.path),
+        fit: BoxFit.cover,
+        height: 150,
+        width: 150,
+      );
+    });
+    updateProfilePic(pickedImage!.path).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Profile Picture Updated'),
+          duration: Duration(seconds: 1),
+        ),
+      );
+    });
+  }
 
   TextEditingController _buildingname = TextEditingController();
   TextEditingController _roomname = TextEditingController();
@@ -46,7 +72,7 @@ class _ProfileState extends State<Profile> {
                 setState(() {
                   uic.changeTheme();
                 });
-                getHomeDetails(0);
+                getHomeDetails(homeIndex);
               },
               icon: Icon(
                   uic.isDark
@@ -63,19 +89,26 @@ class _ProfileState extends State<Profile> {
               height: 20,
             ),
             Center(
-              child: CircleAvatar(
-                  backgroundColor: uic.yellow,
-                  minRadius: 75,
-                  maxRadius: 80,
-                  child: CircleAvatar(
-                    radius: 75,
-                    backgroundColor: uic.background,
-                    child: ClipOval(
-                        child: Icon(
-                      Icons.person,
-                      size: 140,
+              child: GestureDetector(
+                onTap: () async {
+                  await _pickImage();
+                },
+                child: CircleAvatar(
+                    backgroundColor: uic.yellow,
+                    minRadius: 75,
+                    maxRadius: 80,
+                    child: CircleAvatar(
+                      radius: 75,
+                      backgroundColor: uic.background,
+                      child: ClipOval(
+                          child: currentuser!.photoURL != null || image != null
+                              ? image
+                              : Icon(
+                                  Icons.person,
+                                  size: 140,
+                                )),
                     )),
-                  )),
+              ),
             ),
             SizedBox(
               height: 20,
@@ -140,7 +173,7 @@ class _ProfileState extends State<Profile> {
                                   ))
                             ],
                           );
-                        }).then((value) => setState(() {}));
+                        });
 
                     //Navigator.pushNamed(context, '/login');
                   },
@@ -160,16 +193,22 @@ class _ProfileState extends State<Profile> {
                       fontWeight: FontWeight.bold)),
             ),
             SizedBox(height: 20),
-            Padding(
+            Container(
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(
                   shrinkWrap: true,
+                  
                   itemCount: userdetails.homes.length + 1,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      childAspectRatio: 1,
+                      childAspectRatio: .95,
                       crossAxisSpacing: 10,
-                      mainAxisSpacing: 410),
+                      mainAxisSpacing: 410,
+                      mainAxisExtent: 150
+
+                      
+                      ),
+                  scrollDirection: Axis.vertical,
                   itemBuilder: (BuildContext context, int index) {
                     return index == userdetails.homes.length
                         ? GestureDetector(
@@ -177,7 +216,13 @@ class _ProfileState extends State<Profile> {
                               height: 100,
                               decoration: BoxDecoration(
                                   color: uic.background,
-                                  borderRadius: BorderRadius.circular(20)),
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 10,
+                                        spreadRadius: 2)
+                                  ],),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -218,30 +263,59 @@ class _ProfileState extends State<Profile> {
                               });
                             },
                           )
-                        : Container(
-                            height: 100,
-                            decoration: BoxDecoration(
-                                color: uic.background,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.home,
-                                  color: uic.yellow,
-                                  size: 50,
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  userdetails.homes[index].name,
-                                  style: TextStyle(
-                                      color: uic.textcolor,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
+                        : GestureDetector(
+                            onTap: () async{
+                              homeIndex = index;
+                              await getHomeDetails(homeIndex);
+                              setState(() {
+                              });
+                            },
+                            child: Container(
+                              height: 100,
+                              decoration: BoxDecoration(
+                                  color: uic.background,
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                        left: 10, top: 8, right: 10),
+                                    alignment: Alignment.topLeft,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          userdetails.homes[index].name,
+                                          style: TextStyle(
+                                              color: uic.textcolor,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        if (homeIndex == index)
+                                          Icon(
+                                            Icons.check,
+                                            color: uic.yellow,
+                                            size: 22,
+                                          )
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Image.asset(
+                                    uic.isDark
+                                        ? 'assets/homeDark.png'
+                                        : 'assets/homeLight.png',
+                                    height: 100,
+                                    width: 150,
+                                    fit: BoxFit.cover,
+                                  )
+                                ],
+                              ),
                             ),
                           );
                   }),
@@ -429,11 +503,12 @@ class _ProfileState extends State<Profile> {
                           hid: generateID(10),
                           users: [userdetails]));
                       await updateUserHomes(HomeDetails(
-                              name: _buildingname.text,
-                              rooms: rooms,
-                              hid: generateID(10),
-                              users: [userdetails]))
-                          .then((value) async{await getHomeDetails(0);});
+                          name: _buildingname.text,
+                          rooms: rooms,
+                          hid: generateID(10),
+                          users: [userdetails])).then((value) async {
+                        await getHomeDetails(homeIndex);
+                      });
                       setState(() {
                         _buildingname.text = '';
                         _roomname.text = '';

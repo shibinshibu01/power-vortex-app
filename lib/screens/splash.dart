@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:easy_splash_screen/easy_splash_screen.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:powervortex/global.dart';
 import 'package:powervortex/obj/objects.dart';
 import '../main.dart';
@@ -10,6 +12,7 @@ import 'login.dart';
 import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../database/collections.dart';
+
 
 class Splash extends StatefulWidget {
   final UIComponents ui;
@@ -30,20 +33,25 @@ class _SplashState extends State<Splash> {
   Future<Widget> futureCall() async {
     ///ui = UIComponents();
     await ui.init();
-    await auth.authStateChanges().listen((User? user) async{
+    await auth.authStateChanges().listen((User? user) async {
       currentuser = user;
       userdetails = UserDetails(
         name: user!.displayName!,
         email: user.email!,
         uid: user.uid,
       );
-      
     });
     uic = ui;
-      await Future.delayed(Duration(seconds: 3));
-      listenForConsumptionChanges();
-    if (auth.currentUser != null) {
-       await getHomeDetails(0);
+    await Future.delayed(Duration(seconds: 3));
+    listenForConsumptionChanges();
+    if (auth.currentUser != null&&auth.currentUser!.emailVerified) {
+      if (auth.currentUser!.photoURL == null) {
+        image = Image.asset('assets/user.png');
+      } else
+      image = Image.network(auth.currentUser!.photoURL!,fit: BoxFit.cover,height: 150,
+                          width: 150,);
+      await getAllHomes();
+      await getHomeDetails(homeIndex);
       return Future.value(new Body());
     }
     return Future.value(new Login(ui: ui));
